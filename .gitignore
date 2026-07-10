@@ -1,4 +1,35 @@
+# personal / local
 CLAUDE.local.md
-.env*.local
 .claude/settings.local.json
+
+# dependencies
 node_modules/
+
+# next.js
+/.next/
+/out/
+/build
+
+# misc
+.DS_Store
+*.pem
+
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# env files — .env.local.example is intentionally NOT matched, stays committed
+.env*.local
+
+# vercel
+.vercel
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
+
+# supabase local dev
+supabase/.branches
+supabase/.temp
