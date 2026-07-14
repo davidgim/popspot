@@ -38,3 +38,27 @@ used for `like_count`/`avg_rating`.
 **Date:** 2026-07-09
 
 ---
+
+## Error monitoring: Vercel's built-in observability instead of Sentry
+
+**Decision:** Use Vercel's built-in error/observability tooling for Phase 1
+rather than adding `@sentry/nextjs`. PRD §7/§11 explicitly left this open
+("Sentry (or Vercel's equivalent)").
+
+**Alternatives considered:**
+- Sentry — richer error tracking (breadcrumbs, release tracking, custom
+  alerting rules). Rejected for now: it's a new npm dependency plus a
+  separate external account/DSN to manage, for a Phase 1 skeleton with no
+  production traffic yet. CLAUDE.md requires justifying new dependencies
+  against a no-dependency alternative, and here one already ships free with
+  the Vercel deploy this project already needs.
+
+**Why this matters going forward:** if error volume/complexity outgrows
+Vercel's built-in tooling (need for breadcrumbs, custom alert routing,
+better error grouping across releases), revisit and add Sentry then —
+this isn't a permanent rejection, just deferred until there's a concrete
+gap Vercel's tooling doesn't cover.
+
+**Date:** 2026-07-14
+
+---
