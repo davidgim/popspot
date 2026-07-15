@@ -21,3 +21,21 @@ PRD §11's "Auth" bullet). Nothing to protect yet.
 **Pick up:** alongside Phase 2 (event creation is the first mutation
 route). Don't defer further than that — PRD treats this as required
 non-functional coverage, not optional polish.
+
+---
+
+## Custom SMTP for Supabase Auth — before real users sign up
+
+**What's deferred:** configuring a custom SMTP provider for Supabase Auth
+emails (magic link, confirmations). Currently using Supabase's built-in
+shared email service.
+
+**Why it matters:** the built-in service caps at 2 emails/hour project-wide
+(confirmed in dashboard, 2026-07) and is meant for low-volume/testing use
+— deliverability is also weaker (more likely to land in spam) than a
+dedicated provider. Fine for Phase 1-4 development; not fine once real
+diners/vendors are signing up.
+
+**Pick up:** before Phase 5 (seed real Seattle vendors) at the latest —
+real users hitting a 2/hour global email cap would be a broken signup
+experience, not just a rare edge case.
