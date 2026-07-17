@@ -1,10 +1,11 @@
 import { type NextRequest } from "next/server";
 import { updateSession } from "@/lib/supabase/proxy";
 
-// Rate-limit skeleton (Phase 1 tracker item): mutation limits from PRD §11
-// (event creation, follow/like toggles, ratings, uploads) are not wired up
-// yet — no mutation routes exist until Phase 2+. This is the extension
-// point; see TODO.md for what's deferred and why.
+// Rate limiting (PRD §11) lives per-route in src/lib/rate-limit.ts, not
+// here — different mutations need different limits/keys (per-vendor for
+// events, per-user for vendor creation), and this proxy has no route-
+// specific context to make that call. It only ever handles session
+// refresh.
 export async function proxy(request: NextRequest) {
   const { supabaseResponse } = await updateSession(request);
   return supabaseResponse;

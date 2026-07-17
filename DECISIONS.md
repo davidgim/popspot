@@ -62,3 +62,32 @@ gap Vercel's tooling doesn't cover.
 **Date:** 2026-07-14
 
 ---
+
+## Route Handlers, not Server Actions, for all mutations
+
+**Decision:** every mutation (become-a-vendor, event CRUD, image upload,
+etc.) is a plain Route Handler at a stable URL, not a Next.js Server
+Action. Matches PRD §7's literal wording, but the actual reason is more
+specific than "the PRD said so."
+
+**Alternatives considered:**
+- Server Actions — Next.js App Router's own idiomatic mutation mechanism
+  since v14: less boilerplate per mutation, progressive enhancement for
+  free on forms. Rejected because they're not a stable, externally-callable
+  API — a Server Action compiles to React's internal "Server Functions"
+  wire protocol (custom serialization, build-specific action IDs), meant to
+  be called by the matching React client runtime in the same build, not by
+  an arbitrary external HTTP client. Mobile is a real, stated goal for this
+  project (not hypothetical), and a mobile app has no practical way to call
+  a Server Action directly.
+
+**Why this matters going forward:** Route Handlers are plain `GET`/`POST`
+JSON endpoints — exactly what a future mobile client (or anything else
+outside this Next.js app) needs to call the same backend without any
+rework. Keep every new mutation on this pattern; don't reach for a Server
+Action later "just for one form," since that would recreate the exact
+mobile-incompatibility problem this decision avoids.
+
+**Date:** 2026-07-17
+
+---

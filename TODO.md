@@ -5,22 +5,20 @@ features — see PRD.md §5/§10 for those.
 
 ---
 
-## Rate-limit middleware — implementation deferred past Phase 1
+## Rate-limit middleware — Phase 2 mutations done, Phase 4 still pending
 
-**What's deferred:** the actual `@upstash/ratelimit`-backed limiting logic
-(PRD §11: event creation 20/day/vendor, like/follow toggles 60/min/user,
-stricter caps for accounts <48h old).
+**Resolved this phase:** `src/lib/rate-limit.ts` — real `@upstash/ratelimit`
+limiters wired into every Phase 2 mutation route (become-a-vendor,
+update-vendor, create/update/cancel-event, upload/delete-vendor-image),
+including the stricter <48h-old-account cap for event creation (PRD §11).
 
-**What exists now:** the extension point only — `src/proxy.ts` runs on
-every request and has a comment marking where this plugs in.
+**Still deferred:** like/follow toggles (60/min/user per PRD §11) and
+rating limiters — those mutations don't exist yet, they're Phase 4 scope.
 
-**Why deferred:** there are no mutation routes yet in Phase 1 (auth is the
-only "write" path, and Supabase's own auth rate limits cover that — see
-PRD §11's "Auth" bullet). Nothing to protect yet.
-
-**Pick up:** alongside Phase 2 (event creation is the first mutation
-route). Don't defer further than that — PRD treats this as required
-non-functional coverage, not optional polish.
+**Pick up:** alongside Phase 4, when follow/like/rating mutation routes
+are built. Follow the same pattern established in `rate-limit.ts` — a
+named `Ratelimit` instance per mutation, called at the top of its route
+handler.
 
 ---
 
