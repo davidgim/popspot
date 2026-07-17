@@ -37,3 +37,22 @@ diners/vendors are signing up.
 **Pick up:** before Phase 5 (seed real Seattle vendors) at the latest —
 real users hitting a 2/hour global email cap would be a broken signup
 experience, not just a rare edge case.
+
+---
+
+## Orphaned Storage objects on avatar/cover replacement
+
+**What's deferred:** when a vendor replaces their avatar or cover image,
+`upload-vendor-image` just repoints `vendor.avatar_url`/`cover_image_url`
+at the new file — the *previous* Storage object is never deleted, so it
+sits in the bucket unreferenced.
+
+**Why it matters:** storage-quota hygiene, not security or correctness —
+no other row or policy depends on the orphaned file, it's just wasted
+space. At the scale of a few images per vendor, not urgent.
+
+**Pick up:** if it ever becomes a real quota concern — fetch the current
+`avatar_url`/`cover_image_url` before overwriting and delete the old
+Storage object after the update succeeds, same ordering reasoning as
+`delete-vendor-image` (DB write first, Storage cleanup second, log and
+continue on Storage failure rather than fail the request).
