@@ -77,3 +77,24 @@ round-trips) and reject the whole batch if any would exceed the budget,
 or check if `@upstash/ratelimit` supports a weighted/multi-unit `.limit()`
 call directly (cleaner, avoids N round-trips, needs checking against the
 installed version's API).
+
+---
+
+## Derived vendor location — "vendors near me" browse mode
+
+**What's deferred:** the whole feature, and the schema for it. Raised and
+discussed during Phase 2 planning: should `vendor` carry a general "based
+near" location, independent of upcoming events? Decision: not now, and
+not as a self-declared field — `vendor` has no location column.
+
+**Why it matters / the actual design, if built:** a vendor's stated home
+base can drift stale relative to where they actually operate (e.g.
+Tacoma-based but mostly works Seattle). The honest version is a *derived*
+location — a centroid of the vendor's own recent event locations,
+maintained by trigger the same way `like_count`/`avg_rating` will be
+(Phase 4 pattern) — not a manually-typed field. That requires real event
+history to derive from, which now exists as of this phase.
+
+**Pick up:** this isn't scoped into any current PRD phase (P0 or P1) —
+before building it, it needs to actually be added as a named feature
+(PRD update), not built as a side effect of some other phase's work.
