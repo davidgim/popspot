@@ -56,3 +56,24 @@ space. At the scale of a few images per vendor, not urgent.
 Storage object after the update succeeds, same ordering reasoning as
 `delete-vendor-image` (DB write first, Storage cleanup second, log and
 continue on Storage failure rather than fail the request).
+
+---
+
+## Weighted rate limiting for repeat-weekly event creation
+
+**What's deferred:** `create-event`'s rate limit is consumed once per API
+call, not once per row actually created — a single `repeatWeeks: 12`
+request costs 1 unit of the 20/day budget, not 12. User has explicitly
+asked to revisit this properly later.
+
+**Why it matters:** the 20/day limit exists to prevent fake-event spam
+(PRD §11), and "how many events got created" is the thing that actually
+matters, not "how many API calls were made." Current behavior means the
+practical ceiling is higher than 20/day when repeatWeeks is used.
+
+**Pick up:** either call the limiter once per row before inserting
+(bounded by MAX_REPEAT_WEEKS=12, so worst case 12 sequential Redis
+round-trips) and reject the whole batch if any would exceed the budget,
+or check if `@upstash/ratelimit` supports a weighted/multi-unit `.limit()`
+call directly (cleaner, avoids N round-trips, needs checking against the
+installed version's API).
