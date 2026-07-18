@@ -16,6 +16,9 @@ export default async function DiscoverPage() {
       {user ? (
         <div className="mt-6 flex items-center gap-3 text-sm">
           <span>Signed in as {user.email}</span>
+          <a href="/vendor/new" className="underline">
+            Become a vendor
+          </a>
           <form action="/auth/signout" method="post">
             <button type="submit" className="underline">
               Log out
