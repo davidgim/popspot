@@ -98,3 +98,23 @@ history to derive from, which now exists as of this phase.
 **Pick up:** this isn't scoped into any current PRD phase (P0 or P1) —
 before building it, it needs to actually be added as a named feature
 (PRD update), not built as a side effect of some other phase's work.
+
+---
+
+## No mechanism transitions event.status to 'completed'
+
+**What's deferred:** nothing in the codebase — no trigger, no scheduled
+job — ever sets `event.status = 'completed'` after `end_time` passes.
+Found during Phase 3 planning review.
+
+**Why it matters:** doesn't affect Phase 3 — `search_events`'s date-range
+filter excludes past events regardless of status, so discovery results
+are correct either way. It will matter for Phase 4's rating-prompt flow
+("event end_time passes → user with 'going' RSVP sees 'How was it?'
+prompt," PRD §6), which needs a reliable way to know an event has ended.
+
+**Pick up:** alongside Phase 4. Likely a scheduled job (pg_cron or a
+Vercel cron route) sweeping `scheduled` events past their `end_time`, or
+computing "is this event over" from `end_time` directly at query time
+instead of relying on a stored status transition at all — worth deciding
+which when Phase 4's rating gate is actually being built, not now.
