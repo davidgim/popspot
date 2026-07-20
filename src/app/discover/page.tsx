@@ -1,4 +1,13 @@
 import { createClient } from "@/lib/supabase/server";
+import { DiscoveryMap } from "./discovery-map";
+
+// PRD's explicit default when geolocation is denied/unavailable —
+// Seattle (the seed metro). This is a one-time snapshot, seeding the
+// client's initial state via a prop — the client makes its own
+// independent search_events call on mount if geolocation succeeds; this
+// server call is never reused or referenced again after the page loads.
+const SEATTLE_LAT = 47.6062;
+const SEATTLE_LNG = -122.3321;
 
 export default async function DiscoverPage() {
   const supabase = await createClient();
@@ -6,30 +15,38 @@ export default async function DiscoverPage() {
     data: { user },
   } = await supabase.auth.getUser();
 
-  return (
-    <main className="mx-auto max-w-2xl px-4 py-16">
-      <h1 className="text-2xl font-semibold">Discover pop-ups near you</h1>
-      <p className="mt-2 text-gray-500">
-        Phase 1 skeleton — search, map, and event listings land in Phase 3.
-      </p>
+  const { data: initialResults } = await supabase.rpc("search_events", {
+    lat: SEATTLE_LAT,
+    lng: SEATTLE_LNG,
+  });
 
-      {user ? (
-        <div className="mt-6 flex items-center gap-3 text-sm">
-          <span>Signed in as {user.email}</span>
-          <a href="/vendor/new" className="underline">
-            Become a vendor
+  return (
+    <main className="flex min-h-screen flex-col">
+      <header className="flex items-center justify-between border-b px-4 py-3">
+        <h1 className="text-lg font-semibold">PopSpot</h1>
+        {user ? (
+          <div className="flex items-center gap-3 text-sm">
+            <span>Signed in as {user.email}</span>
+            <a href="/vendor/new" className="underline">
+              Become a vendor
+            </a>
+            <form action="/auth/signout" method="post">
+              <button type="submit" className="underline">
+                Log out
+              </button>
+            </form>
+          </div>
+        ) : (
+          <a href="/login" className="text-sm underline">
+            Log in
           </a>
-          <form action="/auth/signout" method="post">
-            <button type="submit" className="underline">
-              Log out
-            </button>
-          </form>
-        </div>
-      ) : (
-        <a href="/login" className="mt-6 inline-block text-sm underline">
-          Log in
-        </a>
-      )}
+        )}
+      </header>
+
+      <DiscoveryMap
+        initialResults={initialResults ?? []}
+        initialCenter={{ lat: SEATTLE_LAT, lng: SEATTLE_LNG }}
+      />
     </main>
   );
 }

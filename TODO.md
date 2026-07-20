@@ -118,3 +118,25 @@ Vercel cron route) sweeping `scheduled` events past their `end_time`, or
 computing "is this event over" from `end_time` directly at query time
 instead of relying on a stored status transition at all — worth deciding
 which when Phase 4's rating gate is actually being built, not now.
+
+---
+
+## Self-hosted basemap via Protomaps/PMTiles
+
+**What's deferred:** the whole idea. `/discover`'s map currently renders
+OpenFreeMap's free public tile instance (see DECISIONS.md — replaced
+Mapbox's hosted styles after real MapLibre/Mapbox compatibility failures).
+OpenFreeMap has no SLA and runs without a CDN in front.
+
+**Why it matters:** if the public instance ever becomes a real reliability
+concern, Protomaps/PMTiles lets you host an entire basemap extract (e.g.
+just Washington state) as a single static file on Cloudflare R2 or S3 for
+pennies, rendered by MapLibre — eliminates the third-party tile-uptime
+dependency entirely. Also a genuinely good infra story for the portfolio
+angle of this project.
+
+**Pick up:** only if OpenFreeMap's reliability actually becomes a problem
+in practice — not worth the setup cost speculatively. Swapping OpenFreeMap
+for a different MapLibre-native provider (MapTiler, Stadia Maps — both
+commercial, free tiers, SLAs) is the cheaper first fallback if needed
+sooner, since it's a one-line style-URL change.

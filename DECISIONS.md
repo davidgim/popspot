@@ -130,3 +130,28 @@ erroring, the one real risk this approach doesn't automatically catch.
 **Date:** 2026-07-19
 
 ---
+
+## Map tile source: OpenFreeMap, not Mapbox's hosted styles (revises Phase 3 decision 1)
+
+**Decision:** `/discover`'s MapLibre map renders `https://tiles.openfreemap.org/styles/liberty` — a free, MapLibre-native style — instead of Mapbox's hosted Styles API. MapLibre stays the renderer; only the tile/style *source* changed. Mapbox Geocoding (server-side, `create-event`) is unaffected and unchanged.
+
+**What Phase 3's original decision 1 assumed:** "MapLibre GL JS (renderer) + Mapbox tiles (data source)" was a standard, low-friction pairing — reasonable at the time, since it's a commonly cited pattern and matches the PRD's literal wording.
+
+**What actually happened, in order:**
+1. `streets-v12`'s style JSON includes `"projection": {"name": "globe"}`. MapLibre rejected it — not because MapLibre lacks globe support (it's had it since v5), but because MapLibre's style spec uses `projection.type` while Mapbox's uses `projection.name`: two style-spec dialects that have been diverging since MapLibre's 2020 fork from Mapbox GL JS, not a single missing feature.
+2. Switching to `streets-v11` (predates that property) got past that error, then failed differently: the style internally references `mapbox://...` scheme URLs for sprites/sources, which MapLibre doesn't natively resolve into HTTPS requests — confirmed via Mapbox's own docs, which state exactly this and recommend direct HTTPS tile URLs instead.
+3. Mapbox's classic raster tile API (a potential simpler fallback) returned 403 — classic raster styles are deprecated in favor of vector-only tilesets, so there's no simple non-vector escape hatch either.
+
+**Alternatives considered and rejected:**
+- `maplibregl-mapbox-request-transformer` (npm package, rewrites `mapbox://` URLs for MapLibre). Rejected: its own documented fix for the v12 projection error is passing `validateStyle: false` — disabling MapLibre's style validation entirely, masking every future spec divergence rather than fixing this one. Also v0.0.3, no test suite, pinned to `maplibre-gl ^4` (project is on v5), last released over a year ago, single maintainer — real ongoing-maintenance risk for a workaround, not a fix. Mapbox's own docs additionally warn this path bills tiles individually (Vector Tiles API) instead of Mapbox's bundled map-loads model — worse unit economics on top of everything else.
+- Mapbox GL JS (switch the renderer instead of the tile source). Coherent, and would have zero further compatibility risk — but reverses the original license-avoidance reasoning to solve a problem this app doesn't have (a plain streets-and-pins basemap needs none of Mapbox GL JS's exclusive features — globe projection, 3D terrain, Studio styling). Worth revisiting only if a future feature genuinely needs a Mapbox-exclusive capability.
+
+**Why OpenFreeMap specifically:** publishes standard MapLibre-native style JSON (OpenMapTiles schema) — no `mapbox://` references, no proprietary properties, verified directly before wiring it in. Free, no API key, no request limits on the public instance; production basemap for at least one other real product (MapHub) since mid-2024. Honest caveat: no SLA, donation-funded, runs without a CDN in front — a reasonable risk at this project's current stage, and cheap to exit if it isn't later: OpenFreeMap serves standard MapLibre style JSON, so swapping to a commercial MapLibre-native provider (MapTiler, Stadia Maps — both have free tiers and SLAs) is a one-line style-URL change, not a re-architecture. That swappability is the structural difference from the Mapbox pairing this replaces.
+
+**Why this matters going forward:** within the MapLibre ecosystem, tile/style providers are commodity-swappable by design (all speak the same open style spec) — the Mapbox pairing wasn't, because Mapbox's hosted styles are a proprietary product tied to their own SDK. Don't reach for Mapbox's Styles API for anything MapLibre-rendered again; Mapbox's role in this project is geocoding only.
+
+**Noted for later, not built now:** if OpenFreeMap's public instance ever becomes a real reliability concern, Protomaps/PMTiles (a self-hosted static basemap extract, e.g. Washington state, served from Cloudflare R2/S3 for pennies) is the natural upgrade — eliminates third-party tile-uptime dependency entirely. Not worth the setup cost for Phase 3.
+
+**Date:** 2026-07-20
+
+---
