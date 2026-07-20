@@ -1,7 +1,3 @@
-// GENERATED FILE — do not hand-edit. Regenerate with `npm run gen:types`
-// after every schema migration. This is the single source of truth for
-// table/column/RPC shapes on the TypeScript side; hand-written duplicate
-// interfaces are exactly the drift risk this file exists to close.
 export type Json =
   | string
   | number
@@ -194,6 +190,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      list_cuisine_tags: { Args: { result_limit?: number }; Returns: string[] }
       search_events: {
         Args: {
           cuisines?: string[]
@@ -208,6 +205,8 @@ export type Database = {
           distance_m: number
           end_time: string
           event_id: string
+          latitude: number
+          longitude: number
           start_time: string
           status: string
           title: string
