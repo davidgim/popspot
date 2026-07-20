@@ -91,3 +91,42 @@ mobile-incompatibility problem this decision avoids.
 **Date:** 2026-07-17
 
 ---
+
+## Generated Supabase types, not an ORM (Prisma/Drizzle)
+
+**Decision:** `npm run gen:types` (`supabase gen types typescript --linked`)
+generates `src/lib/supabase/database.types.ts` from the live schema,
+wired into `createBrowserClient<Database>`/`createServerClient<Database>`
+in `client.ts`/`server.ts`/`lib/supabase/proxy.ts`. No ORM adopted.
+
+**Alternatives considered:**
+- Prisma (or Drizzle) as the schema/migration layer. Rejected: this
+  project's security model is RLS + column-level `GRANT`s (every table
+  this session), which ORMs have weak-to-no first-class support for —
+  policies/grants/`SECURITY DEFINER` functions would still need hand-
+  written SQL regardless, meaning adopting an ORM wouldn't actually
+  eliminate hand-written migrations, just add a second system alongside
+  them. Same story for PostGIS (`geography`, `ST_DWithin`, GIST indexes) —
+  minimal-to-no ORM support, constant escape-hatches to raw SQL. Also a
+  new, heavy dependency (CLAUDE.md: justify against the no-dependency
+  alternative) where Supabase's own CLI — already in use — covers the
+  real gap for free.
+- Status quo (hand-written TS interfaces per component, no cross-check
+  against the schema at all). Rejected once actually exercised: adopting
+  generated types immediately surfaced real drift — `event-manager.tsx`
+  hand-declared `status: "scheduled" | "cancelled" | "completed"`, but
+  the actual column is `text + check constraint`, not a native Postgres
+  enum, so nothing was verifying that claim. Confirms the gap was real.
+
+**Why this matters going forward:** never hand-write a TS interface that
+duplicates a table's shape. Import from `database.types.ts` (via `Pick<>`
+when a component only needs a subset of columns, as in `event-manager.tsx`/
+`image-manager.tsx`/`vendor-details-form.tsx`). Run `npm run gen:types`
+after every migration that changes schema — the file is committed (build-
+time type-checking has no network access to regenerate it live), so
+forgetting to regenerate means the types silently go stale rather than
+erroring, the one real risk this approach doesn't automatically catch.
+
+**Date:** 2026-07-19
+
+---

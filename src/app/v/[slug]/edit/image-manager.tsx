@@ -4,12 +4,12 @@ import { useState, type ChangeEvent } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { MAX_GALLERY_IMAGES } from "@/lib/validation/vendor-image";
+import type { Database } from "@/lib/supabase/database.types";
 
-type VendorImage = {
-  id: string;
-  storage_path: string;
-  caption: string | null;
-};
+type VendorImage = Pick<
+  Database["public"]["Tables"]["vendor_image"]["Row"],
+  "id" | "storage_path" | "caption"
+>;
 
 const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp"];
 const MAX_SIZE_BYTES = 5 * 1024 * 1024;

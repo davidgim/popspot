@@ -3,6 +3,9 @@ import { createClient } from "@/lib/supabase/server";
 import { updateVendorSchema } from "@/lib/validation/vendor";
 import { slugify } from "@/lib/slug";
 import { updateVendorLimiter, rateLimitResponse } from "@/lib/rate-limit";
+import type { Database } from "@/lib/supabase/database.types";
+
+type VendorUpdate = Database["public"]["Tables"]["vendor"]["Update"];
 
 export async function PATCH(
   request: Request,
@@ -29,7 +32,7 @@ export async function PATCH(
     return NextResponse.json({ error: parsed.error.flatten() }, { status: 400 });
   }
 
-  const updates: Record<string, unknown> = { ...parsed.data };
+  const updates: VendorUpdate = { ...parsed.data };
   if (parsed.data.slug !== undefined) {
     const sanitized = slugify(parsed.data.slug);
     if (!sanitized) {

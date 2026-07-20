@@ -2,17 +2,19 @@
 
 import { useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
+import type { Database } from "@/lib/supabase/database.types";
 
-type Event = {
-  id: string;
-  title: string | null;
-  venue_name: string;
-  address_text: string;
-  start_time: string;
-  end_time: string;
-  status: "scheduled" | "cancelled" | "completed";
-  description: string | null;
-};
+type Event = Pick<
+  Database["public"]["Tables"]["event"]["Row"],
+  | "id"
+  | "title"
+  | "venue_name"
+  | "address_text"
+  | "start_time"
+  | "end_time"
+  | "status"
+  | "description"
+>;
 
 function toLocalInputValue(iso: string) {
   const d = new Date(iso);

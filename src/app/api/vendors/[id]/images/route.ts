@@ -54,10 +54,16 @@ export async function POST(
     .getPublicUrl(storagePath);
 
   if (slot === "avatar" || slot === "cover") {
-    const column = slot === "avatar" ? "avatar_url" : "cover_image_url";
+    // Branched rather than a computed { [column]: ... } key — a dynamic
+    // key loses the literal type Supabase's generated Update type needs
+    // to check the column actually exists.
+    const update =
+      slot === "avatar"
+        ? { avatar_url: publicUrlData.publicUrl }
+        : { cover_image_url: publicUrlData.publicUrl };
     const { data, error } = await supabase
       .from("vendor")
-      .update({ [column]: publicUrlData.publicUrl })
+      .update(update)
       .eq("id", vendorId)
       .select()
       .single();

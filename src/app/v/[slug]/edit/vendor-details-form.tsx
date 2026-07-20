@@ -2,18 +2,20 @@
 
 import { useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
+import type { Database } from "@/lib/supabase/database.types";
 
-type Vendor = {
-  id: string;
-  slug: string;
-  name: string;
-  bio: string | null;
-  cuisine_tags: string[] | null;
-  instagram_url: string | null;
-  tiktok_url: string | null;
-  website_url: string | null;
-  is_active: boolean;
-};
+type Vendor = Pick<
+  Database["public"]["Tables"]["vendor"]["Row"],
+  | "id"
+  | "slug"
+  | "name"
+  | "bio"
+  | "cuisine_tags"
+  | "instagram_url"
+  | "tiktok_url"
+  | "website_url"
+  | "is_active"
+>;
 
 export function VendorDetailsForm({ vendor }: { vendor: Vendor }) {
   const router = useRouter();

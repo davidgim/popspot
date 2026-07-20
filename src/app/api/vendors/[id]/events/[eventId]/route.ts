@@ -3,6 +3,9 @@ import { createClient } from "@/lib/supabase/server";
 import { updateEventSchema } from "@/lib/validation/event";
 import { geocodeAddress } from "@/lib/mapbox/geocode";
 import { updateEventLimiter, rateLimitResponse } from "@/lib/rate-limit";
+import type { Database } from "@/lib/supabase/database.types";
+
+type EventUpdate = Database["public"]["Tables"]["event"]["Update"];
 
 export async function PATCH(
   request: Request,
@@ -29,7 +32,7 @@ export async function PATCH(
     return NextResponse.json({ error: parsed.error.flatten() }, { status: 400 });
   }
 
-  const updates: Record<string, unknown> = { ...parsed.data };
+  const updates: EventUpdate = { ...parsed.data };
 
   // Only re-geocode if address_text is actually part of this update —
   // otherwise `location` is simply absent from `updates`, leaving the
