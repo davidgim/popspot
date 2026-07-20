@@ -53,6 +53,18 @@ export const vendorImageLimiter = new Ratelimit({
   prefix: "ratelimit:vendor-image",
 });
 
+// Not PRD-numbered. The first limiter in this project keyed by caller IP
+// rather than user.id/vendor_id — this endpoint is public and anonymous
+// by design (typed location search on /discover), unlike every limiter
+// above which assumes an authenticated caller. 20/min per IP is generous
+// for real typing/search use while still bounding cost against Mapbox's
+// quota from a single abusive IP.
+export const locationSearchLimiter = new Ratelimit({
+  redis,
+  limiter: Ratelimit.slidingWindow(20, "1 m"),
+  prefix: "ratelimit:location-search",
+});
+
 const NEW_ACCOUNT_WINDOW_MS = 48 * 60 * 60 * 1000;
 
 export function isNewAccount(profileCreatedAt: string): boolean {
@@ -64,4 +76,16 @@ export function rateLimitResponse() {
     { error: "Too many requests. Try again later." },
     { status: 429 },
   );
+}
+
+// Vercel sets x-forwarded-for on every request; serverless functions have
+// no direct socket access to read a "real" client IP any other way. The
+// header can carry a comma-separated chain (client, then any proxies) —
+// the first entry is the original client. Falls back to a shared bucket
+// key when the header is absent (e.g. local dev with no proxy in front),
+// which means all anonymous local requests share one limit — acceptable
+// for dev, never hit in production.
+export function getClientIp(request: Request): string {
+  const forwardedFor = request.headers.get("x-forwarded-for");
+  return forwardedFor?.split(",")[0]?.trim() ?? "unknown";
 }
