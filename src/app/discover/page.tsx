@@ -27,6 +27,12 @@ export default async function DiscoverPage() {
         {user ? (
           <div className="flex items-center gap-3 text-sm">
             <span>Signed in as {user.email}</span>
+            <a href="/me/vendors" className="underline">
+              My Vendors
+            </a>
+            <a href="/me/plans" className="underline">
+              My Plans
+            </a>
             <a href="/vendor/new" className="underline">
               Become a vendor
             </a>
