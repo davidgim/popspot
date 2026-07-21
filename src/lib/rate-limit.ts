@@ -65,6 +65,37 @@ export const locationSearchLimiter = new Ratelimit({
   prefix: "ratelimit:location-search",
 });
 
+// PRD §11: 60/min per user. Resolves the "Phase 2 mutations done, Phase 4
+// still pending" TODO.md entry.
+export const followLimiter = new Ratelimit({
+  redis,
+  limiter: Ratelimit.slidingWindow(60, "1 m"),
+  prefix: "ratelimit:follow",
+});
+
+// PRD §11: 60/min per user, same literal number as follow.
+export const likeLimiter = new Ratelimit({
+  redis,
+  limiter: Ratelimit.slidingWindow(60, "1 m"),
+  prefix: "ratelimit:like",
+});
+
+// Not PRD-numbered. Generous, bounds rapid RSVP toggle-spam.
+export const rsvpLimiter = new Ratelimit({
+  redis,
+  limiter: Ratelimit.slidingWindow(30, "1 m"),
+  prefix: "ratelimit:rsvp",
+});
+
+// Not PRD-numbered. Light backstop, not the primary defense — ratings
+// are already gated by a genuine past-RSVP requirement (rating.sql),
+// which is the real abuse control here.
+export const ratingLimiter = new Ratelimit({
+  redis,
+  limiter: Ratelimit.slidingWindow(10, "1 h"),
+  prefix: "ratelimit:rating",
+});
+
 const NEW_ACCOUNT_WINDOW_MS = 48 * 60 * 60 * 1000;
 
 export function isNewAccount(profileCreatedAt: string): boolean {

@@ -5,20 +5,16 @@ features — see PRD.md §5/§10 for those.
 
 ---
 
-## Rate-limit middleware — Phase 2 mutations done, Phase 4 still pending
+## Rate-limit middleware — RESOLVED (Phase 2 + Phase 4)
 
-**Resolved this phase:** `src/lib/rate-limit.ts` — real `@upstash/ratelimit`
-limiters wired into every Phase 2 mutation route (become-a-vendor,
-update-vendor, create/update/cancel-event, upload/delete-vendor-image),
-including the stricter <48h-old-account cap for event creation (PRD §11).
-
-**Still deferred:** like/follow toggles (60/min/user per PRD §11) and
-rating limiters — those mutations don't exist yet, they're Phase 4 scope.
-
-**Pick up:** alongside Phase 4, when follow/like/rating mutation routes
-are built. Follow the same pattern established in `rate-limit.ts` — a
-named `Ratelimit` instance per mutation, called at the top of its route
-handler.
+`src/lib/rate-limit.ts` — real `@upstash/ratelimit` limiters wired into
+every mutation route across Phases 2 and 4: become-a-vendor,
+update-vendor, create/update/cancel-event, upload/delete-vendor-image
+(Phase 2, incl. the stricter <48h-old-account cap for event creation),
+and follow/like/rsvp/rating (Phase 4, `followLimiter`/`likeLimiter` at
+PRD §11's literal 60/min/user; `rsvpLimiter`/`ratingLimiter` not
+PRD-numbered, chosen with reasoning in code comments). No mutation route
+in this codebase is unprotected.
 
 ---
 
