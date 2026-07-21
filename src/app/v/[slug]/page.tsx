@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { ToggleButton } from "@/components/toggle-button";
 
 // Plain <img> tags, not next/image — using next/image against Supabase
 // Storage URLs needs remotePatterns configured in next.config.ts, which
@@ -23,19 +24,40 @@ export default async function VendorPage({
     notFound();
   }
 
-  const [{ data: images }, { data: events }] = await Promise.all([
-    supabase
-      .from("vendor_image")
-      .select("*")
-      .eq("vendor_id", vendor.id)
-      .order("sort_order"),
-    supabase
-      .from("event")
-      .select("*")
-      .eq("vendor_id", vendor.id)
-      .gte("start_time", new Date().toISOString())
-      .order("start_time"),
-  ]);
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  const [{ data: images }, { data: events }, { data: existingFollow }, { data: existingLike }] =
+    await Promise.all([
+      supabase
+        .from("vendor_image")
+        .select("*")
+        .eq("vendor_id", vendor.id)
+        .order("sort_order"),
+      supabase
+        .from("event")
+        .select("*")
+        .eq("vendor_id", vendor.id)
+        .gte("start_time", new Date().toISOString())
+        .order("start_time"),
+      user
+        ? supabase
+            .from("follow")
+            .select("vendor_id")
+            .eq("vendor_id", vendor.id)
+            .eq("user_id", user.id)
+            .maybeSingle()
+        : Promise.resolve({ data: null }),
+      user
+        ? supabase
+            .from("vendor_like")
+            .select("vendor_id")
+            .eq("vendor_id", vendor.id)
+            .eq("user_id", user.id)
+            .maybeSingle()
+        : Promise.resolve({ data: null }),
+    ]);
 
   return (
     <main className="mx-auto max-w-3xl px-4 py-16">
@@ -67,6 +89,25 @@ export default async function VendorPage({
             {vendor.like_count} likes
           </p>
         </div>
+      </div>
+
+      <div className="mt-4 flex gap-2">
+        <ToggleButton
+          endpoint={`/api/vendors/${vendor.id}/follow`}
+          initialActive={!!existingFollow}
+          activeLabel="Following"
+          inactiveLabel="Follow"
+          isLoggedIn={!!user}
+          loginRedirect={`/v/${vendor.slug}`}
+        />
+        <ToggleButton
+          endpoint={`/api/vendors/${vendor.id}/like`}
+          initialActive={!!existingLike}
+          activeLabel="Liked"
+          inactiveLabel="Like"
+          isLoggedIn={!!user}
+          loginRedirect={`/v/${vendor.slug}`}
+        />
       </div>
 
       {vendor.bio && <p className="mt-4">{vendor.bio}</p>}
