@@ -97,23 +97,13 @@ before building it, it needs to actually be added as a named feature
 
 ---
 
-## No mechanism transitions event.status to 'completed'
+## No mechanism transitions event.status to 'completed' — RESOLVED
 
-**What's deferred:** nothing in the codebase — no trigger, no scheduled
-job — ever sets `event.status = 'completed'` after `end_time` passes.
-Found during Phase 3 planning review.
-
-**Why it matters:** doesn't affect Phase 3 — `search_events`'s date-range
-filter excludes past events regardless of status, so discovery results
-are correct either way. It will matter for Phase 4's rating-prompt flow
-("event end_time passes → user with 'going' RSVP sees 'How was it?'
-prompt," PRD §6), which needs a reliable way to know an event has ended.
-
-**Pick up:** alongside Phase 4. Likely a scheduled job (pg_cron or a
-Vercel cron route) sweeping `scheduled` events past their `end_time`, or
-computing "is this event over" from `end_time` directly at query time
-instead of relying on a stored status transition at all — worth deciding
-which when Phase 4's rating gate is actually being built, not now.
+Resolved in Phase 4 via the second option this entry itself named:
+"is this event over" is computed from `end_time < now()` directly at
+query time (in `rating`'s gated RLS policy, and in `/me/plans`'s
+upcoming/past split) — no scheduled job or stored status transition was
+built, and none is needed.
 
 ---
 
@@ -136,3 +126,24 @@ in practice — not worth the setup cost speculatively. Swapping OpenFreeMap
 for a different MapLibre-native provider (MapTiler, Stadia Maps — both
 commercial, free tiers, SLAs) is the cheaper first fallback if needed
 sooner, since it's a one-line style-URL change.
+
+---
+
+## No page lists vendors a user owns
+
+**What's deferred:** there's no page showing "all vendors I own/manage."
+A vendor owner today has no way to discover their own vendors' edit pages
+except already knowing each vendor's slug — `/vendor/new` creates one and
+redirects straight to its edit page, but nothing links back to it later.
+Raised explicitly during Phase 4 planning: `/me/vendors` (PRD §5/§8) is
+"followed vendors," a different, unrelated concept — not vendor-owner
+navigation.
+
+**Why it matters:** genuinely missing UX, will bite a vendor owner with
+more than one vendor (allowed — no unique constraint on
+`vendor.owner_user_id`, per Phase 2's decision) or one who simply forgets
+their own slug.
+
+**Pick up:** not scoped into any current PRD phase — a small, standalone
+addition whenever it's prioritized (e.g. `/me/managed-vendors` or folded
+into a future vendor dashboard, PRD P1 F8).
