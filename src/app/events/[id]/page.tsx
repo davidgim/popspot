@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { ToggleButton } from "@/components/toggle-button";
 
 // Server-rendered, shareable event detail page — same shape as
 // /v/[slug]. Explicit vendor.is_active check (not relied on implicitly
@@ -26,6 +27,19 @@ export default async function EventPage({
   }
 
   const vendor = event.vendor;
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  const { data: existingRsvp } = user
+    ? await supabase
+        .from("rsvp")
+        .select("event_id")
+        .eq("event_id", event.id)
+        .eq("user_id", user.id)
+        .maybeSingle()
+    : { data: null };
 
   return (
     <main className="mx-auto max-w-2xl px-4 py-16">
@@ -71,6 +85,17 @@ export default async function EventPage({
       </div>
 
       {event.description && <p className="mt-4 text-sm">{event.description}</p>}
+
+      <div className="mt-6">
+        <ToggleButton
+          endpoint={`/api/events/${event.id}/rsvp`}
+          initialActive={!!existingRsvp}
+          activeLabel="Going"
+          inactiveLabel="I'm going"
+          isLoggedIn={!!user}
+          loginRedirect={`/events/${event.id}`}
+        />
+      </div>
     </main>
   );
 }
