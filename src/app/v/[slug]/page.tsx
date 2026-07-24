@@ -179,7 +179,7 @@ export default async function VendorPage({
           ))}
         </ul>
       ) : (
-        <p className="mt-4 text-sm text-gray-500">No upcoming events.</p>
+        <p className="mt-4 text-sm text-gray-500">No upcoming events yet.</p>
       )}
     </main>
   );

@@ -110,7 +110,9 @@ export default async function MyPlansPage() {
           ))}
         </ul>
       ) : (
-        <p className="mt-3 text-sm text-gray-500">No past plans yet.</p>
+        <p className="mt-3 text-sm text-gray-500">
+          You haven&apos;t attended any pop-ups yet.
+        </p>
       )}
     </main>
   );
