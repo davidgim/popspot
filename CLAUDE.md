@@ -67,12 +67,18 @@ UI internals and styling may move faster with lighter review.
 
 ## Phase tracker
 
-- [ ] Phase 1 — Skeleton: Next.js + Supabase, PostGIS migration, auth,
+- [x] Phase 1 — Skeleton: Next.js + Supabase, PostGIS migration, auth,
       Sentry, rate-limit middleware skeleton, deployed hello world
-- [ ] Phase 2 — Vendor side: profiles, images, event CRUD + Mapbox geocoding
-- [ ] Phase 3 — Discovery: search_events RPC, /discover map+list, filters
-- [ ] Phase 4 — Engagement: follow, RSVP, likes, gated ratings, flags,
+      (Vercel built-in observability used instead of Sentry, see
+      DECISIONS.md)
+- [x] Phase 2 — Vendor side: profiles, images, event CRUD + Mapbox geocoding
+- [x] Phase 3 — Discovery: search_events RPC, /discover map+list, filters
+- [x] Phase 4 — Engagement: follow, RSVP, likes, gated ratings, flags,
       counter triggers
 - [ ] Phase 5 — Polish & seed: empty states, responsive pass, OG images,
       seed Seattle vendors
+- [ ] Phase 5.5 — Visual design: color palette, typography, spacing/layout
+      rhythm, a cohesive look-and-feel — distinct from Phase 5's
+      *functional* polish. Not in the original roadmap; added after the
+      gap was identified during Phase 5 planning (see DECISIONS.md).
 - [ ] Phase 6 — IG ingestion agent (Python service; semi-manual first)

@@ -220,6 +220,8 @@ Core queries (Supabase RPC or route handlers)
 
 **Phase 5 — Polish & seed:** empty states, mobile responsiveness pass, OG images for sharing, seed 10–15 real Seattle vendors manually (walk up / IG DM — being local is the moat).
 
+**Phase 5.5 — Visual design (added post-Phase-5-planning, not in the original roadmap):** a dedicated aesthetic pass — color palette, typography, spacing/layout rhythm, a cohesive look-and-feel — distinct from Phase 5's functional polish (mobile responsiveness, empty states, image performance, OG metadata). Every page through Phase 4 was deliberately built with minimal, functional-only Tailwind styling; nothing in the original 6-phase roadmap covered actual visual design. Sequenced before Phase 6 rather than folded into Phase 5 or deferred past Phase 6 — see DECISIONS.md.
+
 **Phase 6 — Instagram ingestion agent (Python):** separate Python service: fetch a vendor's recent IG posts → LLM extracts venue/date/time from captions and flyer images → draft events written to Postgres → vendor reviews and confirms in dashboard. Start with a semi-manual pipeline (paste IG post URLs) before automating fetch, since IG scraping/API access is the risky part — the extraction agent is the valuable part either way.
 
 Each phase = a working, deployed increment. Suggested Claude Code workflow: keep this PRD in the repo as `PRD.md`, reference it in `CLAUDE.md`, and scope each session to one phase.

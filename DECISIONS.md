@@ -155,3 +155,38 @@ erroring, the one real risk this approach doesn't automatically catch.
 **Date:** 2026-07-20
 
 ---
+
+## New Phase 5.5 — visual design, sequenced before Phase 6
+
+**Decision:** the 6-phase roadmap never had a phase dedicated to visual/
+aesthetic design (color palette, typography, spacing rhythm, a cohesive
+look-and-feel). Every page through Phase 4 was deliberately built with
+minimal, functional-only Tailwind — correct for those phases (features
+and correctness first), but the gap was never actually scheduled to close.
+Raised during Phase 5 planning, not something I noticed and silently
+decided on. New Phase 5.5 inserted between Phase 5 and Phase 6 in both
+PRD.md §10 and CLAUDE.md's phase tracker.
+
+**Alternatives considered:**
+- Fold a visual-design pass into Phase 5 itself (already touching every
+  page for the mobile-responsiveness work — arguably efficient to do
+  both at once). Rejected: keeps Phase 5 scoped exactly to PRD §10's
+  literal 4 bullets, and visual design deserves its own dedicated
+  planning session (palette/typography choices, not just layout fixes),
+  not to be squeezed in as a rider on a different phase's plan.
+- Defer past Phase 6 (matches PRD §5's own stated priority ordering,
+  which frames the IG ingestion agent as "the killer feature... the
+  resume-relevant agentic component," ahead of pure aesthetics).
+  Rejected — user's explicit call: visual design before Phase 6, not
+  after.
+
+**Why this matters going forward:** Phase 5 (this one) stays scoped to
+functional polish only — do not add visual/aesthetic changes to it.
+CLAUDE.md's phase tracker also had stale unchecked boxes for Phases 1-4
+(all actually shipped) — corrected in the same edit, since it was the
+same checklist already being touched for a related reason, not a
+separate unrequested change.
+
+**Date:** 2026-07-23
+
+---
