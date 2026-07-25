@@ -190,3 +190,51 @@ separate unrequested change.
 **Date:** 2026-07-23
 
 ---
+
+## Image optimization: `next/image` via Vercel, not Supabase's image transforms (revises Phase 5 plan decision 2)
+
+**Decision:** all 4 files that render vendor/gallery images (`/v/[slug]`,
+`/v/[slug]/edit/image-manager.tsx`, `/events/[id]`, `/me/vendors`) use
+`next/image`'s `<Image>` component, which resizes/compresses via Vercel's
+own image-optimization pipeline (included on the free Hobby tier). Storage
+URLs are passed through unmodified — no Supabase-side transform query
+params are applied.
+
+**What the Phase 5 plan assumed:** PRD §11 literally specifies "Serve via
+Supabase image transforms (resized/compressed), never originals," and the
+approved plan's decision 2 scoped exactly that.
+
+**What actually happened:** verified against Supabase's own pricing docs
+*before* writing any code, not assumed or discovered after something broke
+— image transformations are not available on the free tier at all; Pro
+plan ($25/mo) or higher is required. This project has no paid Supabase
+tier and no budget line to add one for this.
+
+**Alternatives considered:**
+- Upgrade to Supabase Pro to unlock transforms as PRD §11 specifies.
+  Rejected: a new recurring cost purely to satisfy the letter of an NFR
+  that has a free-tier-compatible alternative achieving the same practical
+  outcome (no unoptimized originals served to the browser).
+- Serve Storage URLs directly with no optimization at all (drop the NFR).
+  Rejected: PRD §11's actual concern — not shipping full-resolution
+  originals to every client — is real and cheap to address; dropping it
+  entirely would be settling for less than a free option already covers.
+
+**Why `next/image` specifically:** already the standard Next.js pattern
+for any image whose dimensions are known ahead of render, ships on the
+Hobby tier with no new dependency (it's part of `next`, already installed),
+and performs the same fetch-original → resize/compress → serve pipeline
+Supabase's transforms would have, just executed by Vercel's infrastructure
+at request time instead of Supabase's.
+
+**Why this matters going forward:** if this project ever moves to Supabase
+Pro for other reasons, revisit whether Supabase-side transforms are worth
+adding on top of `next/image` — likely redundant at that point, since both
+solve the same problem. Until then, any new image-rendering surface should
+use `next/image`, not a plain `<img>`, to stay consistent with this
+decision. Full detail in TODO.md under "Supabase Storage image transforms
+— blocked on plan tier."
+
+**Date:** 2026-07-25
+
+---
