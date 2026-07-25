@@ -1,7 +1,50 @@
 import { notFound } from "next/navigation";
 import Image from "next/image";
+import type { Metadata } from "next";
 import { createClient } from "@/lib/supabase/server";
 import { ToggleButton } from "@/components/toggle-button";
+
+// Static OG image (decision, Phase 5 plan): reuses the vendor's own
+// uploaded photo directly, not a dynamically-rendered branded card.
+// Vendors with no photo get no og:image at all — a plain link preview,
+// acceptable since not every vendor will have uploaded photos yet.
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+  const { slug } = await params;
+  const supabase = await createClient();
+  const { data: vendor } = await supabase
+    .from("vendor")
+    .select("name, bio, cover_image_url, avatar_url")
+    .eq("slug", slug)
+    .maybeSingle();
+
+  if (!vendor) {
+    return { title: "Vendor not found" };
+  }
+
+  const description = vendor.bio ?? `Find ${vendor.name} on PopSpot.`;
+  const image = vendor.cover_image_url ?? vendor.avatar_url;
+
+  return {
+    title: vendor.name,
+    description,
+    openGraph: {
+      title: vendor.name,
+      description,
+      images: image ? [image] : [],
+    },
+    twitter: {
+      card: image ? "summary_large_image" : "summary",
+      title: vendor.name,
+      description,
+      images: image ? [image] : [],
+    },
+  };
+}
+
 export default async function VendorPage({
   params,
 }: {

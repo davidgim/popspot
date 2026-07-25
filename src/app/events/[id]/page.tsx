@@ -1,7 +1,53 @@
 import { notFound } from "next/navigation";
 import Image from "next/image";
+import type { Metadata } from "next";
 import { createClient } from "@/lib/supabase/server";
 import { ToggleButton } from "@/components/toggle-button";
+
+// Same static-image decision as /v/[slug] — vendor's own uploaded photo,
+// not a dynamically-rendered card. Same vendor.is_active exclusion as
+// the page itself, for consistency: a deactivated vendor's event
+// shouldn't get a real-looking share preview pointing at a page that
+// 404s.
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}): Promise<Metadata> {
+  const { id } = await params;
+  const supabase = await createClient();
+  const { data: event } = await supabase
+    .from("event")
+    .select("title, description, venue_name, start_time, vendor(name, is_active, cover_image_url, avatar_url)")
+    .eq("id", id)
+    .maybeSingle();
+
+  if (!event || !event.vendor || !event.vendor.is_active) {
+    return { title: "Event not found" };
+  }
+
+  const title = event.title ?? event.vendor.name;
+  const description =
+    event.description ??
+    `${event.vendor.name} at ${event.venue_name}, ${new Date(event.start_time).toLocaleDateString()}.`;
+  const image = event.vendor.cover_image_url ?? event.vendor.avatar_url;
+
+  return {
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      images: image ? [image] : [],
+    },
+    twitter: {
+      card: image ? "summary_large_image" : "summary",
+      title,
+      description,
+      images: image ? [image] : [],
+    },
+  };
+}
 
 // Server-rendered, shareable event detail page — same shape as
 // /v/[slug]. Explicit vendor.is_active check (not relied on implicitly
