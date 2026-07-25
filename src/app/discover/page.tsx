@@ -22,11 +22,11 @@ export default async function DiscoverPage() {
 
   return (
     <main className="flex min-h-screen flex-col">
-      <header className="flex items-center justify-between border-b px-4 py-3">
+      <header className="flex flex-wrap items-center justify-between gap-y-2 border-b px-4 py-3">
         <h1 className="text-lg font-semibold">PopSpot</h1>
         {user ? (
-          <div className="flex items-center gap-3 text-sm">
-            <span>Signed in as {user.email}</span>
+          <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm">
+            <span className="hidden sm:inline">Signed in as {user.email}</span>
             <a href="/me/vendors" className="underline">
               My Vendors
             </a>

@@ -261,13 +261,13 @@ export function DiscoveryMap({
 
       {error && <p className="text-sm text-red-600">{error}</p>}
 
-      <div className="flex flex-1 gap-4">
+      <div className="flex flex-1 flex-col gap-4 md:flex-row">
         <div
           ref={mapContainerRef}
-          className="h-[500px] flex-1 rounded border"
+          className="h-64 w-full rounded border md:h-[500px] md:flex-1"
         />
 
-        <div className="w-72 shrink-0 overflow-y-auto">
+        <div className="w-full shrink-0 overflow-y-auto md:w-72">
           {results.length === 0 ? (
             <p className="text-sm text-gray-500">
               No pop-ups found. Try widening your radius or date range.
