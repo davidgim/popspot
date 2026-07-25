@@ -147,3 +147,28 @@ their own slug.
 **Pick up:** not scoped into any current PRD phase — a small, standalone
 addition whenever it's prioritized (e.g. `/me/managed-vendors` or folded
 into a future vendor dashboard, PRD P1 F8).
+
+---
+
+## Supabase Storage image transforms — blocked on plan tier
+
+**What's deferred:** applying Supabase's server-side image resize/
+compression transforms to Storage URLs (PRD §11: "Serve via Supabase
+image transforms (resized/compressed), never originals"). Verified via
+Supabase's own pricing docs before starting Phase 5's image work, not
+assumed: image transformations are not available on the free tier at
+all — Pro plan ($25/mo) or higher required.
+
+**What shipped instead:** `next/image` across all 4 files that render
+vendor/gallery images (`/v/[slug]`, `/v/[slug]/edit/image-manager.tsx`,
+`/events/[id]`, `/me/vendors`) — this still delivers real resize/
+compression, just via Vercel's own image optimization pipeline (included
+on the free Hobby tier) rather than Supabase's, which fetches the
+original from Storage and optimizes it before serving to the browser.
+Not literally what PRD §11 specifies, but achieves the same practical
+outcome (no unoptimized originals served) without a new recurring cost.
+
+**Pick up:** if/when this project moves to Supabase Pro for other
+reasons, revisit whether Supabase-side transforms are still worth adding
+on top of Vercel's (likely redundant at that point — both solve the same
+problem).

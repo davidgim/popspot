@@ -2,6 +2,7 @@
 
 import { useState, type ChangeEvent } from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import { createClient } from "@/lib/supabase/client";
 import { MAX_GALLERY_IMAGES } from "@/lib/validation/vendor-image";
 import type { Database } from "@/lib/supabase/database.types";
@@ -112,10 +113,11 @@ export function ImageManager({
         <div>
           <p className="text-sm font-medium">Avatar</p>
           {avatarUrl && (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
+            <Image
               src={avatarUrl}
               alt=""
+              width={64}
+              height={64}
               className="mt-2 h-16 w-16 rounded-full object-cover"
             />
           )}
@@ -131,12 +133,9 @@ export function ImageManager({
         <div>
           <p className="text-sm font-medium">Cover</p>
           {coverUrl && (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
-              src={coverUrl}
-              alt=""
-              className="mt-2 h-24 w-full rounded object-cover"
-            />
+            <div className="relative mt-2 h-24 w-full">
+              <Image src={coverUrl} alt="" fill className="rounded object-cover" />
+            </div>
           )}
           <input
             type="file"
@@ -157,12 +156,12 @@ export function ImageManager({
                 .from("vendor-images")
                 .getPublicUrl(image.storage_path);
               return (
-                <div key={image.id} className="relative">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
+                <div key={image.id} className="relative aspect-square">
+                  <Image
                     src={data.publicUrl}
                     alt={image.caption ?? ""}
-                    className="aspect-square rounded object-cover"
+                    fill
+                    className="rounded object-cover"
                   />
                   <button
                     type="button"

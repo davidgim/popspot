@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import Image from "next/image";
 import { createClient } from "@/lib/supabase/server";
 import { ToggleButton } from "@/components/toggle-button";
 
@@ -61,10 +62,11 @@ export default async function EventPage({
 
       <div className="mt-2 flex items-center gap-3">
         {vendor.avatar_url && (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
+          <Image
             src={vendor.avatar_url}
             alt={vendor.name}
+            width={40}
+            height={40}
             className="h-10 w-10 rounded-full object-cover"
           />
         )}

@@ -1,4 +1,5 @@
 import { redirect } from "next/navigation";
+import Image from "next/image";
 import { createClient } from "@/lib/supabase/server";
 
 // Followed vendors, per PRD §5 F5 / §8's route sketch literally: "Heart a
@@ -32,10 +33,11 @@ export default async function MyVendorsPage() {
               f.vendor && (
                 <li key={f.vendor.id} className="flex items-center gap-3 rounded border p-3">
                   {f.vendor.avatar_url && (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img
+                    <Image
                       src={f.vendor.avatar_url}
                       alt={f.vendor.name}
+                      width={40}
+                      height={40}
                       className="h-10 w-10 rounded-full object-cover"
                     />
                   )}

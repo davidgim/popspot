@@ -1,11 +1,7 @@
 import { notFound } from "next/navigation";
+import Image from "next/image";
 import { createClient } from "@/lib/supabase/server";
 import { ToggleButton } from "@/components/toggle-button";
-
-// Plain <img> tags, not next/image — using next/image against Supabase
-// Storage URLs needs remotePatterns configured in next.config.ts, which
-// isn't set up yet. Deliberate Phase 2 simplification; revisit in the
-// Phase 5 polish pass.
 export default async function VendorPage({
   params,
 }: {
@@ -62,20 +58,23 @@ export default async function VendorPage({
   return (
     <main className="mx-auto max-w-3xl px-4 py-16">
       {vendor.cover_image_url && (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img
-          src={vendor.cover_image_url}
-          alt=""
-          className="mb-6 h-48 w-full rounded object-cover"
-        />
+        <div className="relative mb-6 h-48 w-full">
+          <Image
+            src={vendor.cover_image_url}
+            alt=""
+            fill
+            className="rounded object-cover"
+          />
+        </div>
       )}
 
       <div className="flex items-center gap-4">
         {vendor.avatar_url && (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
+          <Image
             src={vendor.avatar_url}
             alt={vendor.name}
+            width={64}
+            height={64}
             className="h-16 w-16 rounded-full object-cover"
           />
         )}
@@ -143,17 +142,18 @@ export default async function VendorPage({
       {images && images.length > 0 && (
         <div className="mt-8 grid grid-cols-3 gap-2">
           {images.map((image) => (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
-              key={image.id}
-              src={
-                supabase.storage
-                  .from("vendor-images")
-                  .getPublicUrl(image.storage_path).data.publicUrl
-              }
-              alt={image.caption ?? ""}
-              className="aspect-square rounded object-cover"
-            />
+            <div key={image.id} className="relative aspect-square">
+              <Image
+                src={
+                  supabase.storage
+                    .from("vendor-images")
+                    .getPublicUrl(image.storage_path).data.publicUrl
+                }
+                alt={image.caption ?? ""}
+                fill
+                className="rounded object-cover"
+              />
+            </div>
           ))}
         </div>
       )}
