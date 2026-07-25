@@ -75,8 +75,9 @@ UI internals and styling may move faster with lighter review.
 - [x] Phase 3 — Discovery: search_events RPC, /discover map+list, filters
 - [x] Phase 4 — Engagement: follow, RSVP, likes, gated ratings, flags,
       counter triggers
-- [ ] Phase 5 — Polish & seed: empty states, responsive pass, OG images,
-      seed Seattle vendors
+- [x] Phase 5 — Polish & seed: empty states, responsive pass, OG images,
+      seed Seattle vendors (seeding itself is manual outreach work, out of
+      code scope — see the Phase 5 plan)
 - [ ] Phase 5.5 — Visual design: color palette, typography, spacing/layout
       rhythm, a cohesive look-and-feel — distinct from Phase 5's
       *functional* polish. Not in the original roadmap; added after the
