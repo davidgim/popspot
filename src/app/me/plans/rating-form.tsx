@@ -30,7 +30,7 @@ export function RatingForm({ vendorId, vendorName }: { vendorId: string; vendorN
   }
 
   return (
-    <div className="mt-2 rounded border border-dashed p-3">
+    <div className="mt-2 rounded border border-dashed border-twine p-3">
       <p className="text-sm font-medium">How was {vendorName}?</p>
       <div className="mt-2 flex items-center gap-2">
         {[1, 2, 3, 4, 5].map((n) => (
@@ -39,7 +39,9 @@ export function RatingForm({ vendorId, vendorName }: { vendorId: string; vendorN
             type="button"
             onClick={() => setStars(n)}
             aria-label={`${n} star${n > 1 ? "s" : ""}`}
-            className={`text-xl ${n <= stars ? "text-black" : "text-gray-300"}`}
+            className={`text-xl focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-stamp ${
+              n <= stars ? "text-marker" : "text-twine/40"
+            }`}
           >
             ★
           </button>
@@ -48,12 +50,12 @@ export function RatingForm({ vendorId, vendorName }: { vendorId: string; vendorN
           type="button"
           onClick={handleSubmit}
           disabled={stars < 1 || submitting}
-          className="ml-2 rounded bg-black px-2 py-1 text-xs text-white disabled:opacity-50"
+          className="ml-2 rounded bg-stamp px-2 py-1 text-xs font-medium text-paper disabled:opacity-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink"
         >
           {submitting ? "Submitting…" : "Submit"}
         </button>
       </div>
-      {error && <p className="mt-1 text-xs text-red-600">{error}</p>}
+      {error && <p className="mt-1 text-xs text-stamp">{error}</p>}
     </div>
   );
 }

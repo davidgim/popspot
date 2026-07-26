@@ -92,10 +92,13 @@ function EventForm({
     setSubmitting(false);
   }
 
+  const inputClass =
+    "rounded border border-twine bg-paper px-3 py-2 text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-stamp";
+
   return (
     <form
       onSubmit={handleSubmit}
-      className="mt-3 flex flex-col gap-2 rounded border p-3"
+      className="mt-3 flex flex-col gap-2 rounded border border-twine p-3"
     >
       <input
         type="text"
@@ -103,7 +106,7 @@ function EventForm({
         value={venueName}
         onChange={(e) => setVenueName(e.target.value)}
         placeholder="Venue name"
-        className="rounded border px-3 py-2"
+        className={inputClass}
       />
       <input
         type="text"
@@ -111,44 +114,44 @@ function EventForm({
         value={addressText}
         onChange={(e) => setAddressText(e.target.value)}
         placeholder="Address"
-        className="rounded border px-3 py-2"
+        className={inputClass}
       />
       <input
         type="text"
         value={title}
         onChange={(e) => setTitle(e.target.value)}
         placeholder="Title (optional, defaults to vendor name)"
-        className="rounded border px-3 py-2"
+        className={inputClass}
       />
       <textarea
         value={description}
         onChange={(e) => setDescription(e.target.value)}
         placeholder="Description (optional)"
         rows={2}
-        className="rounded border px-3 py-2"
+        className={inputClass}
       />
-      <label className="text-sm text-gray-500">
+      <label className="text-sm text-twine">
         Start
         <input
           type="datetime-local"
           required
           value={startTime}
           onChange={(e) => setStartTime(e.target.value)}
-          className="mt-1 w-full rounded border px-3 py-2"
+          className={`mt-1 w-full font-mono ${inputClass}`}
         />
       </label>
-      <label className="text-sm text-gray-500">
+      <label className="text-sm text-twine">
         End
         <input
           type="datetime-local"
           required
           value={endTime}
           onChange={(e) => setEndTime(e.target.value)}
-          className="mt-1 w-full rounded border px-3 py-2"
+          className={`mt-1 w-full font-mono ${inputClass}`}
         />
       </label>
       {!event && (
-        <label className="text-sm text-gray-500">
+        <label className="text-sm text-twine">
           Repeat weekly for N weeks (optional, max 12)
           <input
             type="number"
@@ -156,7 +159,7 @@ function EventForm({
             max={12}
             value={repeatWeeks}
             onChange={(e) => setRepeatWeeks(e.target.value)}
-            className="mt-1 w-full rounded border px-3 py-2"
+            className={`mt-1 w-full ${inputClass}`}
           />
         </label>
       )}
@@ -164,19 +167,19 @@ function EventForm({
         <button
           type="submit"
           disabled={submitting}
-          className="rounded bg-black px-3 py-2 text-white disabled:opacity-50"
+          className="rounded bg-stamp px-3 py-2 font-medium text-paper hover:bg-stamp/90 disabled:opacity-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink"
         >
           {submitting ? "Saving…" : event ? "Save" : "Create event"}
         </button>
         <button
           type="button"
           onClick={onDone}
-          className="rounded border px-3 py-2"
+          className="rounded border border-twine px-3 py-2 text-ink hover:border-stamp hover:text-stamp"
         >
           Cancel
         </button>
       </div>
-      {error && <p className="text-sm text-red-600">{error}</p>}
+      {error && <p className="text-sm text-stamp">{error}</p>}
     </form>
   );
 }
@@ -231,13 +234,13 @@ export function EventManager({
         <button
           type="button"
           onClick={() => setShowCreate((s) => !s)}
-          className="text-sm underline"
+          className="text-sm text-stamp underline underline-offset-2"
         >
           {showCreate ? "Close" : "+ New event"}
         </button>
       </div>
 
-      {error && <p className="mt-2 text-sm text-red-600">{error}</p>}
+      {error && <p className="mt-2 text-sm text-stamp">{error}</p>}
 
       {showCreate && (
         <EventForm vendorId={vendorId} onDone={() => setShowCreate(false)} />
@@ -254,17 +257,17 @@ export function EventManager({
               />
             </li>
           ) : (
-            <li key={event.id} className="rounded border p-3">
+            <li key={event.id} className="rounded border border-twine p-3">
               <div
                 className={
                   event.status === "cancelled"
-                    ? "font-medium text-gray-400 line-through"
+                    ? "font-medium text-ink/40 line-through"
                     : "font-medium"
                 }
               >
                 {event.title ?? "Untitled"} — {event.venue_name}
               </div>
-              <div className="text-sm text-gray-500">
+              <div className="font-mono text-sm text-twine">
                 {new Date(event.start_time).toLocaleString()} · {event.status}
               </div>
               {event.status === "scheduled" && (
@@ -272,21 +275,21 @@ export function EventManager({
                   <button
                     type="button"
                     onClick={() => setEditingId(event.id)}
-                    className="underline"
+                    className="text-stamp underline underline-offset-2"
                   >
                     Edit
                   </button>
                   <button
                     type="button"
                     onClick={() => handleCancel(event.id)}
-                    className="underline"
+                    className="text-stamp underline underline-offset-2"
                   >
                     Cancel
                   </button>
                   <button
                     type="button"
                     onClick={() => handleBulkCancel(event)}
-                    className="underline"
+                    className="text-stamp underline underline-offset-2"
                   >
                     Cancel this + all future here
                   </button>
@@ -296,7 +299,7 @@ export function EventManager({
           ),
         )}
         {events.length === 0 && (
-          <p className="text-sm text-gray-500">No events yet.</p>
+          <p className="text-sm text-twine">No events yet.</p>
         )}
       </ul>
     </section>

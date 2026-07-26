@@ -17,7 +17,7 @@ export default async function NewVendorPage() {
     <>
       <SiteHeader user={user} />
       <main className="mx-auto max-w-md px-4 py-16">
-        <h1 className="text-xl font-semibold">Become a vendor</h1>
+        <h1 className="font-display text-2xl">Become a vendor</h1>
         <NewVendorForm />
       </main>
     </>

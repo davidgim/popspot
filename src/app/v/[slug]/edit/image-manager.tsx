@@ -107,7 +107,7 @@ export function ImageManager({
   return (
     <section className="mt-10">
       <h2 className="text-lg font-semibold">Images</h2>
-      {error && <p className="mt-2 text-sm text-red-600">{error}</p>}
+      {error && <p className="mt-2 text-sm text-stamp">{error}</p>}
 
       <div className="mt-4 flex flex-col gap-6">
         <div>
@@ -166,7 +166,7 @@ export function ImageManager({
                   <button
                     type="button"
                     onClick={() => handleDelete(image.id)}
-                    className="absolute right-1 top-1 rounded bg-black/70 px-1.5 text-xs text-white"
+                    className="absolute right-1 top-1 rounded bg-slate/80 px-1.5 text-xs text-paper"
                   >
                     ×
                   </button>

@@ -27,14 +27,17 @@ export default async function MyVendorsPage() {
     <>
       <SiteHeader user={user} />
       <main className="mx-auto max-w-2xl px-4 py-16">
-        <h1 className="text-xl font-semibold">My Vendors</h1>
+        <h1 className="font-display text-2xl">My Vendors</h1>
 
         {follows && follows.length > 0 ? (
-          <ul className="mt-6 flex flex-col gap-3">
+          <ul className="mt-6 flex flex-col gap-4">
             {follows.map(
               (f) =>
                 f.vendor && (
-                  <li key={f.vendor.id} className="flex items-center gap-3 rounded border p-3">
+                  <li
+                    key={f.vendor.id}
+                    className="ticket-stub flex items-center gap-3 rounded-r border-y border-r border-twine p-3"
+                  >
                     {f.vendor.avatar_url && (
                       <Image
                         src={f.vendor.avatar_url}
@@ -44,7 +47,10 @@ export default async function MyVendorsPage() {
                         className="h-10 w-10 rounded-full object-cover"
                       />
                     )}
-                    <a href={`/v/${f.vendor.slug}`} className="font-medium underline">
+                    <a
+                      href={`/v/${f.vendor.slug}`}
+                      className="font-medium text-stamp underline underline-offset-2"
+                    >
                       {f.vendor.name}
                     </a>
                   </li>
@@ -52,9 +58,9 @@ export default async function MyVendorsPage() {
             )}
           </ul>
         ) : (
-          <p className="mt-6 text-sm text-gray-500">
+          <p className="mt-6 text-sm text-twine">
             You&apos;re not following any vendors yet.{" "}
-            <a href="/discover" className="underline">
+            <a href="/discover" className="text-stamp underline underline-offset-2">
               Discover pop-ups
             </a>
           </p>

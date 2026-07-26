@@ -74,16 +74,19 @@ export function VendorDetailsForm({ vendor }: { vendor: Vendor }) {
     setStatus("idle");
   }
 
+  const inputClass =
+    "rounded border border-twine bg-paper px-3 py-2 text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-stamp";
+
   return (
     <form onSubmit={handleSubmit} className="mt-6 flex flex-col gap-3">
-      <label className="text-sm text-gray-500">
+      <label className="text-sm text-twine">
         Slug (popspot.com/v/{slug || "…"})
         <input
           type="text"
           required
           value={slug}
           onChange={(e) => setSlug(e.target.value)}
-          className="mt-1 w-full rounded border px-3 py-2"
+          className={`mt-1 w-full ${inputClass}`}
         />
       </label>
       <input
@@ -92,60 +95,61 @@ export function VendorDetailsForm({ vendor }: { vendor: Vendor }) {
         value={name}
         onChange={(e) => setName(e.target.value)}
         placeholder="Vendor name"
-        className="rounded border px-3 py-2"
+        className={inputClass}
       />
       <textarea
         value={bio}
         onChange={(e) => setBio(e.target.value)}
         placeholder="Bio"
         rows={3}
-        className="rounded border px-3 py-2"
+        className={inputClass}
       />
       <input
         type="text"
         value={cuisineTags}
         onChange={(e) => setCuisineTags(e.target.value)}
         placeholder="Cuisine tags, comma-separated"
-        className="rounded border px-3 py-2"
+        className={inputClass}
       />
       <input
         type="url"
         value={instagramUrl}
         onChange={(e) => setInstagramUrl(e.target.value)}
         placeholder="Instagram URL"
-        className="rounded border px-3 py-2"
+        className={inputClass}
       />
       <input
         type="url"
         value={tiktokUrl}
         onChange={(e) => setTiktokUrl(e.target.value)}
         placeholder="TikTok URL"
-        className="rounded border px-3 py-2"
+        className={inputClass}
       />
       <input
         type="url"
         value={websiteUrl}
         onChange={(e) => setWebsiteUrl(e.target.value)}
         placeholder="Website URL"
-        className="rounded border px-3 py-2"
+        className={inputClass}
       />
       <label className="flex items-center gap-2 text-sm">
         <input
           type="checkbox"
           checked={isActive}
           onChange={(e) => setIsActive(e.target.checked)}
+          className="accent-stamp"
         />
         Active (visible to the public)
       </label>
       <button
         type="submit"
         disabled={status === "saving"}
-        className="rounded bg-black px-3 py-2 text-white disabled:opacity-50"
+        className="rounded bg-stamp px-3 py-2 font-medium text-paper hover:bg-stamp/90 disabled:opacity-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink"
       >
         {status === "saving" ? "Saving…" : "Save changes"}
       </button>
-      {status === "saved" && <p className="text-sm text-green-600">Saved.</p>}
-      {error && <p className="text-sm text-red-600">{error}</p>}
+      {status === "saved" && <p className="text-sm text-marker">Saved.</p>}
+      {error && <p className="text-sm text-stamp">{error}</p>}
     </form>
   );
 }

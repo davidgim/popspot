@@ -49,6 +49,9 @@ export function NewVendorForm() {
     setSubmitting(false);
   }
 
+  const inputClass =
+    "rounded border border-twine bg-paper px-3 py-2 text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-stamp";
+
   return (
     <form onSubmit={handleSubmit} className="mt-6 flex flex-col gap-3">
       <input
@@ -57,51 +60,51 @@ export function NewVendorForm() {
         value={name}
         onChange={(e) => setName(e.target.value)}
         placeholder="Vendor name"
-        className="rounded border px-3 py-2"
+        className={inputClass}
       />
       <textarea
         value={bio}
         onChange={(e) => setBio(e.target.value)}
         placeholder="Bio (optional)"
         rows={3}
-        className="rounded border px-3 py-2"
+        className={inputClass}
       />
       <input
         type="text"
         value={cuisineTags}
         onChange={(e) => setCuisineTags(e.target.value)}
         placeholder="Cuisine tags, comma-separated (optional)"
-        className="rounded border px-3 py-2"
+        className={inputClass}
       />
       <input
         type="url"
         value={instagramUrl}
         onChange={(e) => setInstagramUrl(e.target.value)}
         placeholder="Instagram URL (optional)"
-        className="rounded border px-3 py-2"
+        className={inputClass}
       />
       <input
         type="url"
         value={tiktokUrl}
         onChange={(e) => setTiktokUrl(e.target.value)}
         placeholder="TikTok URL (optional)"
-        className="rounded border px-3 py-2"
+        className={inputClass}
       />
       <input
         type="url"
         value={websiteUrl}
         onChange={(e) => setWebsiteUrl(e.target.value)}
         placeholder="Website URL (optional)"
-        className="rounded border px-3 py-2"
+        className={inputClass}
       />
       <button
         type="submit"
         disabled={submitting}
-        className="rounded bg-black px-3 py-2 text-white disabled:opacity-50"
+        className="rounded bg-stamp px-3 py-2 font-medium text-paper hover:bg-stamp/90 disabled:opacity-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink"
       >
         {submitting ? "Creating…" : "Create vendor"}
       </button>
-      {error && <p className="text-sm text-red-600">{error}</p>}
+      {error && <p className="text-sm text-stamp">{error}</p>}
     </form>
   );
 }
