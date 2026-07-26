@@ -3,6 +3,7 @@ import Image from "next/image";
 import type { Metadata } from "next";
 import { createClient } from "@/lib/supabase/server";
 import { ToggleButton } from "@/components/toggle-button";
+import { SiteHeader } from "@/components/site-header";
 
 // Static OG image (decision, Phase 5 plan): reuses the vendor's own
 // uploaded photo directly, not a dynamically-rendered branded card.
@@ -99,7 +100,9 @@ export default async function VendorPage({
     ]);
 
   return (
-    <main className="mx-auto max-w-3xl px-4 py-16">
+    <>
+      <SiteHeader user={user} />
+      <main className="mx-auto max-w-3xl px-4 py-16">
       {vendor.cover_image_url && (
         <div className="relative mb-6 h-48 w-full">
           <Image
@@ -224,6 +227,7 @@ export default async function VendorPage({
       ) : (
         <p className="mt-4 text-sm text-gray-500">No upcoming events yet.</p>
       )}
-    </main>
+      </main>
+    </>
   );
 }

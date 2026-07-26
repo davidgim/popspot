@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
+import { SiteHeader } from "@/components/site-header";
 import { DiscoveryMap } from "./discovery-map";
 
 // PRD's explicit default when geolocation is denied/unavailable —
@@ -22,32 +23,7 @@ export default async function DiscoverPage() {
 
   return (
     <main className="flex min-h-screen flex-col">
-      <header className="flex flex-wrap items-center justify-between gap-y-2 border-b px-4 py-3">
-        <h1 className="text-lg font-semibold">PopSpot</h1>
-        {user ? (
-          <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm">
-            <span className="hidden sm:inline">Signed in as {user.email}</span>
-            <a href="/me/vendors" className="underline">
-              My Vendors
-            </a>
-            <a href="/me/plans" className="underline">
-              My Plans
-            </a>
-            <a href="/vendor/new" className="underline">
-              Become a vendor
-            </a>
-            <form action="/auth/signout" method="post">
-              <button type="submit" className="underline">
-                Log out
-              </button>
-            </form>
-          </div>
-        ) : (
-          <a href="/login" className="text-sm underline">
-            Log in
-          </a>
-        )}
-      </header>
+      <SiteHeader user={user} />
 
       <DiscoveryMap
         initialResults={initialResults ?? []}

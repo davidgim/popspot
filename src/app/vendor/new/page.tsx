@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { SiteHeader } from "@/components/site-header";
 import { NewVendorForm } from "./new-vendor-form";
 
 export default async function NewVendorPage() {
@@ -13,9 +14,12 @@ export default async function NewVendorPage() {
   }
 
   return (
-    <main className="mx-auto max-w-md px-4 py-16">
-      <h1 className="text-xl font-semibold">Become a vendor</h1>
-      <NewVendorForm />
-    </main>
+    <>
+      <SiteHeader user={user} />
+      <main className="mx-auto max-w-md px-4 py-16">
+        <h1 className="text-xl font-semibold">Become a vendor</h1>
+        <NewVendorForm />
+      </main>
+    </>
   );
 }

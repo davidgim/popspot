@@ -3,6 +3,7 @@ import Image from "next/image";
 import type { Metadata } from "next";
 import { createClient } from "@/lib/supabase/server";
 import { ToggleButton } from "@/components/toggle-button";
+import { SiteHeader } from "@/components/site-header";
 
 // Same static-image decision as /v/[slug] — vendor's own uploaded photo,
 // not a dynamically-rendered card. Same vendor.is_active exclusion as
@@ -89,7 +90,9 @@ export default async function EventPage({
     : { data: null };
 
   return (
-    <main className="mx-auto max-w-2xl px-4 py-16">
+    <>
+      <SiteHeader user={user} />
+      <main className="mx-auto max-w-2xl px-4 py-16">
       <a href={`/v/${vendor.slug}`} className="text-sm underline">
         ← {vendor.name}
       </a>
@@ -144,6 +147,7 @@ export default async function EventPage({
           loginRedirect={`/events/${event.id}`}
         />
       </div>
-    </main>
+      </main>
+    </>
   );
 }

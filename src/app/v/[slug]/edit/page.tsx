@@ -1,5 +1,6 @@
 import { notFound, redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { SiteHeader } from "@/components/site-header";
 import { VendorDetailsForm } from "./vendor-details-form";
 import { ImageManager } from "./image-manager";
 import { EventManager } from "./event-manager";
@@ -51,16 +52,19 @@ export default async function EditVendorPage({
     .order("start_time", { ascending: false });
 
   return (
-    <main className="mx-auto max-w-2xl px-4 py-16">
-      <h1 className="text-xl font-semibold">Edit {vendor.name}</h1>
-      <VendorDetailsForm vendor={vendor} />
-      <ImageManager
-        vendorId={vendor.id}
-        avatarUrl={vendor.avatar_url}
-        coverUrl={vendor.cover_image_url}
-        images={images ?? []}
-      />
-      <EventManager vendorId={vendor.id} events={events ?? []} />
-    </main>
+    <>
+      <SiteHeader user={user} />
+      <main className="mx-auto max-w-2xl px-4 py-16">
+        <h1 className="text-xl font-semibold">Edit {vendor.name}</h1>
+        <VendorDetailsForm vendor={vendor} />
+        <ImageManager
+          vendorId={vendor.id}
+          avatarUrl={vendor.avatar_url}
+          coverUrl={vendor.cover_image_url}
+          images={images ?? []}
+        />
+        <EventManager vendorId={vendor.id} events={events ?? []} />
+      </main>
+    </>
   );
 }

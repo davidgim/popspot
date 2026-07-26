@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { SiteHeader } from "@/components/site-header";
 import { RatingForm } from "./rating-form";
 
 // PRD F5's literal acceptance criterion: "My Plans splits upcoming vs
@@ -56,64 +57,67 @@ export default async function MyPlansPage() {
   }
 
   return (
-    <main className="mx-auto max-w-2xl px-4 py-16">
-      <h1 className="text-xl font-semibold">My Plans</h1>
+    <>
+      <SiteHeader user={user} />
+      <main className="mx-auto max-w-2xl px-4 py-16">
+        <h1 className="text-xl font-semibold">My Plans</h1>
 
-      <h2 className="mt-8 text-lg font-semibold">Upcoming</h2>
-      {upcoming.length > 0 ? (
-        <ul className="mt-3 flex flex-col gap-3">
-          {upcoming.map((r) => (
-            <li key={r.event!.id} className="rounded border p-3">
-              <div
-                className={
-                  r.event!.status === "cancelled"
-                    ? "font-medium text-gray-400 line-through"
-                    : "font-medium"
-                }
-              >
-                {r.event!.title ?? r.event!.vendor!.name}
-              </div>
-              <div className="text-sm text-gray-500">
-                {r.event!.venue_name} · {new Date(r.event!.start_time).toLocaleString()}
-              </div>
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <p className="mt-3 text-sm text-gray-500">No upcoming plans yet.</p>
-      )}
+        <h2 className="mt-8 text-lg font-semibold">Upcoming</h2>
+        {upcoming.length > 0 ? (
+          <ul className="mt-3 flex flex-col gap-3">
+            {upcoming.map((r) => (
+              <li key={r.event!.id} className="rounded border p-3">
+                <div
+                  className={
+                    r.event!.status === "cancelled"
+                      ? "font-medium text-gray-400 line-through"
+                      : "font-medium"
+                  }
+                >
+                  {r.event!.title ?? r.event!.vendor!.name}
+                </div>
+                <div className="text-sm text-gray-500">
+                  {r.event!.venue_name} · {new Date(r.event!.start_time).toLocaleString()}
+                </div>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p className="mt-3 text-sm text-gray-500">No upcoming plans yet.</p>
+        )}
 
-      <h2 className="mt-10 text-lg font-semibold">Past</h2>
-      {past.length > 0 ? (
-        <ul className="mt-3 flex flex-col gap-3">
-          {past.map((r) => (
-            <li key={r.event!.id} className="rounded border p-3">
-              <div
-                className={
-                  r.event!.status === "cancelled"
-                    ? "font-medium text-gray-400 line-through"
-                    : "font-medium"
-                }
-              >
-                {r.event!.title ?? r.event!.vendor!.name}
-              </div>
-              <div className="text-sm text-gray-500">
-                {r.event!.venue_name} · {new Date(r.event!.start_time).toLocaleString()}
-              </div>
-              {promptVendorIdByEventId.has(r.event!.id) && (
-                <RatingForm
-                  vendorId={r.event!.vendor!.id}
-                  vendorName={r.event!.vendor!.name}
-                />
-              )}
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <p className="mt-3 text-sm text-gray-500">
-          You haven&apos;t attended any pop-ups yet.
-        </p>
-      )}
-    </main>
+        <h2 className="mt-10 text-lg font-semibold">Past</h2>
+        {past.length > 0 ? (
+          <ul className="mt-3 flex flex-col gap-3">
+            {past.map((r) => (
+              <li key={r.event!.id} className="rounded border p-3">
+                <div
+                  className={
+                    r.event!.status === "cancelled"
+                      ? "font-medium text-gray-400 line-through"
+                      : "font-medium"
+                  }
+                >
+                  {r.event!.title ?? r.event!.vendor!.name}
+                </div>
+                <div className="text-sm text-gray-500">
+                  {r.event!.venue_name} · {new Date(r.event!.start_time).toLocaleString()}
+                </div>
+                {promptVendorIdByEventId.has(r.event!.id) && (
+                  <RatingForm
+                    vendorId={r.event!.vendor!.id}
+                    vendorName={r.event!.vendor!.name}
+                  />
+                )}
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p className="mt-3 text-sm text-gray-500">
+            You haven&apos;t attended any pop-ups yet.
+          </p>
+        )}
+      </main>
+    </>
   );
 }
