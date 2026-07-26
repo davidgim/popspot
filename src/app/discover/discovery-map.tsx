@@ -76,6 +76,27 @@ export function DiscoveryMap({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // Auto re-run the search when radius/date/cuisine filters change.
+  // These controls (the cuisine chips especially, which highlight
+  // instantly on click) visually imply live filtering — previously only
+  // the separate "Update results" button actually triggered a search,
+  // so toggling a chip looked selected but silently did nothing until
+  // that unrelated button was also clicked. Free-text Location search
+  // stays a manual action (its own Search button) since geocoding on
+  // every keystroke would be wasteful and premature.
+  const isFirstFilterRender = useRef(true);
+  useEffect(() => {
+    if (isFirstFilterRender.current) {
+      isFirstFilterRender.current = false;
+      return;
+    }
+    const timeout = setTimeout(() => {
+      runSearch();
+    }, 400);
+    return () => clearTimeout(timeout);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [radiusM, dateFrom, dateTo, selectedCuisines]);
+
   // Geolocation on mount. Denied/unavailable falls back to whatever's
   // already showing (the Seattle-seeded initialResults) — not an error
   // state, just the absence of this effect ever replacing local state.
