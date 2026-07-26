@@ -238,3 +238,63 @@ decision. Full detail in TODO.md under "Supabase Storage image transforms
 **Date:** 2026-07-25
 
 ---
+
+## Phase 5.5 visual identity: kraft-paper/stamped-ticket, not warm-cream/serif
+
+**Decision:** PopSpot's design system is a kraft-paper background
+(`--paper #E3D3B0`), a dark chalkboard-slate header band (`--slate
+#26312B`), stamped-ink text (`--ink #2B1B12`), a rubber-stamp brick-red
+accent (`--stamp #B23A2E`), a mustard-marker secondary accent
+(`--marker #D9A441`), and muted kraft-string borders (`--twine
+#8A7259`). Type: Bevan (heavy slab display, wordmark/H1s only), Archivo
+(body), Space Mono (dates/times/distances — a "receipt" data face). One
+signature element: a CSS-only "ticket stub" card (dashed edge + two
+circular notches painted in `--paper`, no images/`clip-path`) applied
+narrowly to surfaces representing a user's claim on a vendor —
+`/v/[slug]`'s header block, `/me/vendors`' followed list, `/me/plans`'
+RSVP lists.
+
+**What was tried first, and why it got thrown out:** an initial pass
+this session (built, screenshotted, then fully `git reset --hard`
+before any of it reached this log) landed on a cream background
+(`#FBF5EC`) + near-black ink + a terracotta-red accent + Fraunces (a
+high-contrast serif) for headings. Functionally fine, but it's the
+*exact* palette the newly-installed `frontend-design` skill names as
+the single most common AI-generated design cliché ("a warm cream
+background near #F4F1EA with a high-contrast serif display and a
+terracotta accent") — reached by pattern-matching "food → warm
+neutrals" without asking what's specific to *pop-up* vendors as
+opposed to restaurants generally.
+
+**Why kraft-paper/stamped-ticket instead:** grounded in the literal
+materials of the actual subject — a folding table, a taped-up paper
+menu, a hand-stamped logo, an A-frame chalkboard sign, a few hours in a
+parking lot then gone. The engagement model (follow/RSVP/rate) is
+literally about claiming something ephemeral, which is where the
+ticket-stub signature comes from — not a generic "like button."
+
+**Alternatives considered for the signature element:**
+- Apply the ticket-stub styling everywhere (every card, every list
+  item). Rejected — "spend your boldness in one place" (the skill's
+  own restraint principle): ordinary browse/list content (`/discover`
+  results, the owner's own event-management list) stays plain
+  bordered rows, so the motif reads as meaningful rather than
+  wallpaper.
+- A literal stamp/ink-blot texture on buttons (rotation, grunge
+  texture). Rejected as one accessory too many — solid stamp-red fill
+  plus the right type carries the "stamped" idea without added visual
+  noise on every interactive element.
+
+**Why this matters going forward:** any new page or component should
+draw from these same six tokens and three type roles, not introduce a
+new ad-hoc color. The ticket-stub CSS (`.ticket-stub` in
+`globals.css`) only reads correctly on a flat `--paper` background —
+if it's ever placed on a different background color, the notch circles
+need to match that color instead, or the illusion breaks. Before
+reaching for "warm neutrals + serif" on any future food-adjacent
+surface in this app, check it isn't recreating the exact cliché this
+decision moved away from.
+
+**Date:** 2026-07-26
+
+---
