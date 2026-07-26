@@ -34,7 +34,10 @@ export function ToggleButton({
 
   if (!isLoggedIn) {
     return (
-      <a href={`/login?next=${loginRedirect}`} className="text-sm underline">
+      <a
+        href={`/login?next=${loginRedirect}`}
+        className="text-sm text-stamp underline underline-offset-2"
+      >
         Log in to {inactiveLabel.toLowerCase()}
       </a>
     );
@@ -56,7 +59,11 @@ export function ToggleButton({
       type="button"
       onClick={handleClick}
       disabled={pending}
-      className="rounded border px-3 py-1 text-sm disabled:opacity-50"
+      className={`rounded border px-3 py-1 text-sm font-medium transition-colors disabled:opacity-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stamp ${
+        active
+          ? "border-stamp bg-stamp text-paper"
+          : "border-twine text-ink hover:border-stamp hover:text-stamp"
+      }`}
     >
       {active ? activeLabel : inactiveLabel}
     </button>

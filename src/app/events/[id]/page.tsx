@@ -93,20 +93,20 @@ export default async function EventPage({
     <>
       <SiteHeader user={user} />
       <main className="mx-auto max-w-2xl px-4 py-16">
-      <a href={`/v/${vendor.slug}`} className="text-sm underline">
+      <a href={`/v/${vendor.slug}`} className="text-sm text-stamp underline underline-offset-2">
         ← {vendor.name}
       </a>
 
       <h1
-        className={`mt-4 text-2xl font-semibold ${
-          event.status === "cancelled" ? "text-gray-400 line-through" : ""
+        className={`mt-4 font-display text-3xl ${
+          event.status === "cancelled" ? "text-ink/40 line-through" : ""
         }`}
       >
         {event.title ?? vendor.name}
       </h1>
 
       {event.status === "cancelled" && (
-        <p className="mt-1 text-sm text-red-600">This event was cancelled.</p>
+        <p className="mt-1 text-sm text-stamp">This event was cancelled.</p>
       )}
 
       <div className="mt-2 flex items-center gap-3">
@@ -119,7 +119,7 @@ export default async function EventPage({
             className="h-10 w-10 rounded-full object-cover"
           />
         )}
-        <p className="text-sm text-gray-500">
+        <p className="text-sm text-twine">
           {vendor.avg_rating != null
             ? `${vendor.avg_rating.toFixed(1)} ★ (${vendor.rating_count})`
             : "No ratings yet"}
@@ -128,8 +128,8 @@ export default async function EventPage({
 
       <div className="mt-6 flex flex-col gap-1 text-sm">
         <div className="font-medium">{event.venue_name}</div>
-        <div className="text-gray-500">{event.address_text}</div>
-        <div className="text-gray-500">
+        <div className="text-twine">{event.address_text}</div>
+        <div className="font-mono text-twine">
           {new Date(event.start_time).toLocaleString()} –{" "}
           {new Date(event.end_time).toLocaleString()}
         </div>

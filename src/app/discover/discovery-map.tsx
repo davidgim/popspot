@@ -185,12 +185,12 @@ export function DiscoveryMap({
               value={locationQuery}
               onChange={(e) => setLocationQuery(e.target.value)}
               placeholder="City or address"
-              className="rounded border px-2 py-1"
+              className="rounded border border-twine bg-paper px-2 py-1 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-stamp"
             />
             <button
               type="button"
               onClick={handleLocationSearch}
-              className="rounded border px-2 py-1 text-sm"
+              className="rounded border border-twine px-2 py-1 text-sm hover:border-stamp hover:text-stamp focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-stamp"
             >
               Search
             </button>
@@ -202,7 +202,7 @@ export function DiscoveryMap({
           <select
             value={radiusM}
             onChange={(e) => setRadiusM(Number(e.target.value))}
-            className="rounded border px-2 py-1"
+            className="rounded border border-twine bg-paper px-2 py-1 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-stamp"
           >
             {RADIUS_OPTIONS.map((opt) => (
               <option key={opt.meters} value={opt.meters}>
@@ -218,7 +218,7 @@ export function DiscoveryMap({
             type="date"
             value={dateFrom}
             onChange={(e) => setDateFrom(e.target.value)}
-            className="rounded border px-2 py-1"
+            className="rounded border border-twine bg-paper px-2 py-1 font-mono text-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-stamp"
           />
         </label>
 
@@ -228,7 +228,7 @@ export function DiscoveryMap({
             type="date"
             value={dateTo}
             onChange={(e) => setDateTo(e.target.value)}
-            className="rounded border px-2 py-1"
+            className="rounded border border-twine bg-paper px-2 py-1 font-mono text-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-stamp"
           />
         </label>
 
@@ -236,7 +236,7 @@ export function DiscoveryMap({
           type="button"
           onClick={() => runSearch()}
           disabled={searching}
-          className="rounded bg-black px-3 py-1.5 text-sm text-white disabled:opacity-50"
+          className="rounded bg-stamp px-3 py-1.5 text-sm font-medium text-paper hover:bg-stamp/90 disabled:opacity-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink"
         >
           {searching ? "Searching…" : "Update results"}
         </button>
@@ -249,8 +249,10 @@ export function DiscoveryMap({
               key={tag}
               type="button"
               onClick={() => toggleCuisine(tag)}
-              className={`rounded-full border px-2 py-0.5 ${
-                selectedCuisines.includes(tag) ? "bg-black text-white" : ""
+              className={`rounded-full border px-2 py-0.5 transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-stamp ${
+                selectedCuisines.includes(tag)
+                  ? "border-stamp bg-stamp text-paper"
+                  : "border-twine text-ink hover:border-stamp hover:text-stamp"
               }`}
             >
               {tag}
@@ -259,30 +261,30 @@ export function DiscoveryMap({
         </div>
       )}
 
-      {error && <p className="text-sm text-red-600">{error}</p>}
+      {error && <p className="text-sm text-stamp">{error}</p>}
 
       <div className="flex flex-1 flex-col gap-4 md:flex-row">
         <div
           ref={mapContainerRef}
-          className="h-64 w-full rounded border md:h-[500px] md:flex-1"
+          className="h-64 w-full rounded border border-twine md:h-[500px] md:flex-1"
         />
 
         <div className="w-full shrink-0 overflow-y-auto md:w-72">
           {results.length === 0 ? (
-            <p className="text-sm text-gray-500">
+            <p className="text-sm text-twine">
               No pop-ups found. Try widening your radius or date range.
             </p>
           ) : (
             <ul className="flex flex-col gap-3">
               {results.map((r) => (
-                <li key={r.event_id} className="rounded border p-2 text-sm">
-                  <a href={`/events/${r.event_id}`} className="font-medium">
+                <li key={r.event_id} className="rounded border border-twine p-2 text-sm">
+                  <a href={`/events/${r.event_id}`} className="font-medium hover:text-stamp">
                     {r.title ?? r.vendor_name}
                   </a>
-                  <div className="text-gray-500">
+                  <div className="font-mono text-xs text-twine">
                     {r.venue_name} · {new Date(r.start_time).toLocaleString()}
                   </div>
-                  <div className="text-gray-500">
+                  <div className="font-mono text-xs text-twine">
                     {(r.distance_m / 1609).toFixed(1)} mi
                     {r.vendor_avg_rating != null &&
                       ` · ${r.vendor_avg_rating.toFixed(1)}★`}

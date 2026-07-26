@@ -114,45 +114,47 @@ export default async function VendorPage({
         </div>
       )}
 
-      <div className="flex items-center gap-4">
-        {vendor.avatar_url && (
-          <Image
-            src={vendor.avatar_url}
-            alt={vendor.name}
-            width={64}
-            height={64}
-            className="h-16 w-16 rounded-full object-cover"
-          />
-        )}
-        <div>
-          <h1 className="text-2xl font-semibold">{vendor.name}</h1>
-          <p className="text-sm text-gray-500">
-            {vendor.avg_rating != null
-              ? `${vendor.avg_rating.toFixed(1)} ★ (${vendor.rating_count})`
-              : "No ratings yet"}
-            {" · "}
-            {vendor.like_count} likes
-          </p>
+      <div className="ticket-stub rounded-r border-y border-r border-twine p-4">
+        <div className="flex items-center gap-4">
+          {vendor.avatar_url && (
+            <Image
+              src={vendor.avatar_url}
+              alt={vendor.name}
+              width={64}
+              height={64}
+              className="h-16 w-16 rounded-full object-cover"
+            />
+          )}
+          <div>
+            <h1 className="font-display text-3xl">{vendor.name}</h1>
+            <p className="text-sm text-twine">
+              {vendor.avg_rating != null
+                ? `${vendor.avg_rating.toFixed(1)} ★ (${vendor.rating_count})`
+                : "No ratings yet"}
+              {" · "}
+              {vendor.like_count} likes
+            </p>
+          </div>
         </div>
-      </div>
 
-      <div className="mt-4 flex gap-2">
-        <ToggleButton
-          endpoint={`/api/vendors/${vendor.id}/follow`}
-          initialActive={!!existingFollow}
-          activeLabel="Following"
-          inactiveLabel="Follow"
-          isLoggedIn={!!user}
-          loginRedirect={`/v/${vendor.slug}`}
-        />
-        <ToggleButton
-          endpoint={`/api/vendors/${vendor.id}/like`}
-          initialActive={!!existingLike}
-          activeLabel="Liked"
-          inactiveLabel="Like"
-          isLoggedIn={!!user}
-          loginRedirect={`/v/${vendor.slug}`}
-        />
+        <div className="mt-4 flex gap-2">
+          <ToggleButton
+            endpoint={`/api/vendors/${vendor.id}/follow`}
+            initialActive={!!existingFollow}
+            activeLabel="Following"
+            inactiveLabel="Follow"
+            isLoggedIn={!!user}
+            loginRedirect={`/v/${vendor.slug}`}
+          />
+          <ToggleButton
+            endpoint={`/api/vendors/${vendor.id}/like`}
+            initialActive={!!existingLike}
+            activeLabel="Liked"
+            inactiveLabel="Like"
+            isLoggedIn={!!user}
+            loginRedirect={`/v/${vendor.slug}`}
+          />
+        </div>
       </div>
 
       {vendor.bio && <p className="mt-4">{vendor.bio}</p>}
@@ -160,7 +162,7 @@ export default async function VendorPage({
       {vendor.cuisine_tags && vendor.cuisine_tags.length > 0 && (
         <div className="mt-2 flex flex-wrap gap-2 text-sm">
           {vendor.cuisine_tags.map((tag: string) => (
-            <span key={tag} className="rounded-full border px-2 py-0.5">
+            <span key={tag} className="rounded-full border border-twine px-2 py-0.5">
               {tag}
             </span>
           ))}
@@ -169,17 +171,17 @@ export default async function VendorPage({
 
       <div className="mt-2 flex gap-3 text-sm">
         {vendor.instagram_url && (
-          <a href={vendor.instagram_url} className="underline">
+          <a href={vendor.instagram_url} className="text-stamp underline underline-offset-2">
             Instagram
           </a>
         )}
         {vendor.tiktok_url && (
-          <a href={vendor.tiktok_url} className="underline">
+          <a href={vendor.tiktok_url} className="text-stamp underline underline-offset-2">
             TikTok
           </a>
         )}
         {vendor.website_url && (
-          <a href={vendor.website_url} className="underline">
+          <a href={vendor.website_url} className="text-stamp underline underline-offset-2">
             Website
           </a>
         )}
@@ -210,14 +212,10 @@ export default async function VendorPage({
           {events.map((event) => (
             <li
               key={event.id}
-              className={
-                event.status === "cancelled"
-                  ? "text-gray-400 line-through"
-                  : undefined
-              }
+              className={event.status === "cancelled" ? "text-ink/40 line-through" : undefined}
             >
               <div className="font-medium">{event.title ?? vendor.name}</div>
-              <div className="text-sm text-gray-500">
+              <div className="font-mono text-sm text-twine">
                 {event.venue_name} ·{" "}
                 {new Date(event.start_time).toLocaleString()}
               </div>
@@ -225,7 +223,7 @@ export default async function VendorPage({
           ))}
         </ul>
       ) : (
-        <p className="mt-4 text-sm text-gray-500">No upcoming events yet.</p>
+        <p className="mt-4 text-sm text-twine">No upcoming events yet.</p>
       )}
       </main>
     </>
