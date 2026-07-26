@@ -17,6 +17,9 @@ export function SiteHeader({ user }: { user: User | null }) {
           <a href="/me/plans" className="underline decoration-twine underline-offset-2 hover:text-marker">
             My Plans
           </a>
+          <a href="/me/managed-vendors" className="underline decoration-twine underline-offset-2 hover:text-marker">
+            Manage Vendors
+          </a>
           <a href="/vendor/new" className="underline decoration-twine underline-offset-2 hover:text-marker">
             Become a vendor
           </a>

@@ -129,24 +129,13 @@ sooner, since it's a one-line style-URL change.
 
 ---
 
-## No page lists vendors a user owns
+## No page lists vendors a user owns — RESOLVED
 
-**What's deferred:** there's no page showing "all vendors I own/manage."
-A vendor owner today has no way to discover their own vendors' edit pages
-except already knowing each vendor's slug — `/vendor/new` creates one and
-redirects straight to its edit page, but nothing links back to it later.
-Raised explicitly during Phase 4 planning: `/me/vendors` (PRD §5/§8) is
-"followed vendors," a different, unrelated concept — not vendor-owner
-navigation.
-
-**Why it matters:** genuinely missing UX, will bite a vendor owner with
-more than one vendor (allowed — no unique constraint on
-`vendor.owner_user_id`, per Phase 2's decision) or one who simply forgets
-their own slug.
-
-**Pick up:** not scoped into any current PRD phase — a small, standalone
-addition whenever it's prioritized (e.g. `/me/managed-vendors` or folded
-into a future vendor dashboard, PRD P1 F8).
+Resolved: `/me/managed-vendors` lists vendors where `owner_user_id =
+auth.uid()` (including inactive ones, marked as such — RLS's
+`vendor_select_authenticated` already permits this, no new policy
+needed), each linking to `/v/[slug]/edit`. Linked from `SiteHeader` as
+"Manage Vendors," distinct from `/me/vendors` (followed vendors).
 
 ---
 

@@ -5,8 +5,7 @@ import { SiteHeader } from "@/components/site-header";
 
 // Followed vendors, per PRD §5 F5 / §8's route sketch literally: "Heart a
 // vendor from any surface -> appears in 'My Vendors'." Not vendors the
-// user owns/manages — that's a different, currently-missing feature
-// (logged in TODO.md), out of this phase's scope.
+// user owns/manages — that's /me/managed-vendors, a separate page.
 export default async function MyVendorsPage() {
   const supabase = await createClient();
   const {
