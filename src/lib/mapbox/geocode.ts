@@ -36,3 +36,37 @@ export async function geocodeAddress(
     formattedAddress: feature.properties.full_address as string,
   };
 }
+
+// Multi-candidate variant for autocomplete UIs — same endpoint/token as
+// geocodeAddress, just a higher limit. geocodeAddress itself stays
+// unchanged and is still what create-event's submit-time server-side
+// geocoding calls; this is only for populating a live suggestion
+// dropdown while the user types.
+export async function searchAddressCandidates(
+  addressText: string,
+  limit = 5,
+): Promise<GeocodeResult[]> {
+  const url = new URL("https://api.mapbox.com/search/geocode/v6/forward");
+  url.searchParams.set("q", addressText);
+  url.searchParams.set("access_token", process.env.MAPBOX_SECRET_TOKEN!);
+  url.searchParams.set("limit", String(limit));
+
+  const res = await fetch(url);
+  if (!res.ok) {
+    throw new Error(`Mapbox geocoding request failed: ${res.status}`);
+  }
+
+  const data = await res.json();
+  const features = (data.features ?? []) as unknown[];
+
+  return features.map((feature) => {
+    const f = feature as {
+      properties: { coordinates: { longitude: number; latitude: number }; full_address: string };
+    };
+    return {
+      longitude: f.properties.coordinates.longitude,
+      latitude: f.properties.coordinates.latitude,
+      formattedAddress: f.properties.full_address,
+    };
+  });
+}

@@ -55,13 +55,16 @@ export const vendorImageLimiter = new Ratelimit({
 
 // Not PRD-numbered. The first limiter in this project keyed by caller IP
 // rather than user.id/vendor_id — this endpoint is public and anonymous
-// by design (typed location search on /discover), unlike every limiter
-// above which assumes an authenticated caller. 20/min per IP is generous
-// for real typing/search use while still bounding cost against Mapbox's
-// quota from a single abusive IP.
+// by design (typed location search on /discover, and the address-
+// autocomplete field on event creation), unlike every limiter above
+// which assumes an authenticated caller. Raised from 20 to 60/min per IP
+// when this became a live-typeahead endpoint (debounced suggestions
+// across two address fields, not just one click-triggered search) —
+// still IP-bounded against abuse, same order of magnitude as
+// followLimiter/likeLimiter below.
 export const locationSearchLimiter = new Ratelimit({
   redis,
-  limiter: Ratelimit.slidingWindow(20, "1 m"),
+  limiter: Ratelimit.slidingWindow(60, "1 m"),
   prefix: "ratelimit:location-search",
 });
 

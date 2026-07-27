@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import maplibregl from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
 import { createClient } from "@/lib/supabase/client";
+import { AddressAutocomplete, type AddressCandidate } from "@/components/address-autocomplete";
 import type { Database } from "@/lib/supabase/database.types";
 
 type SearchResult =
@@ -171,20 +172,35 @@ export function DiscoveryMap({
     }
   }, [results]);
 
-  async function handleLocationSearch() {
-    if (!locationQuery.trim()) return;
+  // Fallback for pressing Enter without picking a suggestion from the
+  // dropdown — re-uses the same /api/geocode/search endpoint the
+  // autocomplete itself calls, just takes the first (best) candidate.
+  async function handleLocationSearchFallback(query: string) {
+    if (!query.trim()) return;
     setError(null);
     const res = await fetch("/api/geocode/search", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ query: locationQuery }),
+      body: JSON.stringify({ query }),
     });
     if (!res.ok) {
       setError("Could not find that location — try a different search.");
       return;
     }
-    const { latitude, longitude } = await res.json();
-    const real = { lat: latitude, lng: longitude };
+    const { results } = await res.json();
+    const best: AddressCandidate | undefined = results?.[0];
+    if (!best) {
+      setError("Could not find that location — try a different search.");
+      return;
+    }
+    handleLocationSelect(best);
+  }
+
+  // A suggestion was picked directly from the dropdown — its coordinates
+  // are already Mapbox's own answer, so no second geocode round-trip.
+  function handleLocationSelect(candidate: AddressCandidate) {
+    setLocationQuery(candidate.formattedAddress);
+    const real = { lat: candidate.latitude, lng: candidate.longitude };
     setCenter(real);
     runSearch(real);
   }
@@ -200,22 +216,14 @@ export function DiscoveryMap({
       <div className="flex flex-wrap items-end gap-3">
         <label className="flex flex-col text-sm">
           Location
-          <div className="flex gap-1">
-            <input
-              type="text"
-              value={locationQuery}
-              onChange={(e) => setLocationQuery(e.target.value)}
-              placeholder="City or address"
-              className="rounded border border-twine bg-paper px-2 py-1 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-stamp"
-            />
-            <button
-              type="button"
-              onClick={handleLocationSearch}
-              className="rounded border border-twine px-2 py-1 text-sm hover:border-stamp hover:text-stamp focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-stamp"
-            >
-              Search
-            </button>
-          </div>
+          <AddressAutocomplete
+            value={locationQuery}
+            onChange={setLocationQuery}
+            onSelect={handleLocationSelect}
+            onEnterWithoutSelection={handleLocationSearchFallback}
+            placeholder="City or address"
+            className="w-56 rounded border border-twine bg-paper px-2 py-1 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-stamp"
+          />
         </label>
 
         <label className="flex flex-col text-sm">

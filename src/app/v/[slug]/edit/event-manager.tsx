@@ -2,6 +2,7 @@
 
 import { useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
+import { AddressAutocomplete } from "@/components/address-autocomplete";
 import type { Database } from "@/lib/supabase/database.types";
 
 type Event = Pick<
@@ -108,13 +109,13 @@ function EventForm({
         placeholder="Venue name"
         className={inputClass}
       />
-      <input
-        type="text"
-        required
+      <AddressAutocomplete
         value={addressText}
-        onChange={(e) => setAddressText(e.target.value)}
+        onChange={setAddressText}
+        onSelect={(candidate) => setAddressText(candidate.formattedAddress)}
+        required
         placeholder="Address"
-        className={inputClass}
+        className={`w-full ${inputClass}`}
       />
       <input
         type="text"
